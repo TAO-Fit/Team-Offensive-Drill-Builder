@@ -269,11 +269,13 @@
 
   .zone-overlay {
     cursor: pointer;
-    fill: transparent;
+    fill: rgba(74,158,255,0.15);
+    stroke: rgba(74,158,255,0.8);
+    stroke-width: 1.5;
     transition: fill 0.15s;
   }
-  .zone-overlay:hover { fill: rgba(74,158,255,0.25); }
-  .zone-overlay.active { fill: rgba(74,158,255,0.4); }
+  .zone-overlay:hover { fill: rgba(74,158,255,0.35); }
+  .zone-overlay.active { fill: rgba(74,158,255,0.5); stroke: #fff; }
 
   /* Player markers on SVG */
   .player-marker { cursor: move; }
@@ -503,37 +505,8 @@
         <line x1="250" y1="472" x2="250" y2="495" stroke="#fff" stroke-width="2.5"/>
         <line x1="222" y1="495" x2="278" y2="495" stroke="#fff" stroke-width="3.5"/>
 
-        <!-- ZONE OVERLAYS -->
-        <rect class="zone-overlay" id="zone-paint" x="155" y="320" width="190" height="190" data-zone="paint" data-label="Paint"/>
-        <rect class="zone-overlay" id="zone-left-block" x="155" y="400" width="70" height="110" data-zone="left-block" data-label="Left Block"/>
-        <rect class="zone-overlay" id="zone-right-block" x="275" y="400" width="70" height="110" data-zone="right-block" data-label="Right Block"/>
-        <rect class="zone-overlay" id="zone-left-elbow" x="155" y="295" width="75" height="60" data-zone="left-elbow" data-label="Left Elbow"/>
-        <rect class="zone-overlay" id="zone-right-elbow" x="270" y="295" width="75" height="60" data-zone="right-elbow" data-label="Right Elbow"/>
-        <rect class="zone-overlay" id="zone-ft" x="195" y="285" width="110" height="70" data-zone="ft-line" data-label="Free Throw Line"/>
-        <path class="zone-overlay" id="zone-left-mid" d="M 10 510 L 155 510 L 155 320 L 10 320 Z" data-zone="left-mid" data-label="Left Mid Range"/>
-        <path class="zone-overlay" id="zone-right-mid" d="M 490 510 L 345 510 L 345 320 L 490 320 Z" data-zone="right-mid" data-label="Right Mid Range"/>
-        <path class="zone-overlay" id="zone-left-corner" d="M 10 510 L 10 248 L 40 248 L 40 510 Z" data-zone="left-corner-3" data-label="Left Corner 3"/>
-        <path class="zone-overlay" id="zone-right-corner" d="M 490 510 L 490 248 L 460 248 L 460 510 Z" data-zone="right-corner-3" data-label="Right Corner 3"/>
-        <path class="zone-overlay" id="zone-left-wing" d="M 10 248 L 10 120 A 210 210 0 0 1 250 248 L 155 320 L 10 320 Z" data-zone="left-wing-3" data-label="Left Wing 3"/>
-        <path class="zone-overlay" id="zone-right-wing" d="M 490 248 L 490 120 A 210 210 0 0 0 250 248 L 345 320 L 490 320 Z" data-zone="right-wing-3" data-label="Right Wing 3"/>
-        <path class="zone-overlay" id="zone-top-3" d="M 175 320 A 75 75 0 0 1 325 320 L 325 248 A 75 75 0 0 0 175 248 Z" data-zone="top-key-3" data-label="Top of Key 3"/>
-        <path class="zone-overlay" id="zone-above-arc" d="M 10 10 L 490 10 L 490 120 A 210 210 0 0 0 10 120 Z" data-zone="above-arc" data-label="Above the Arc"/>
-
-        <!-- Zone labels -->
-        <text x="250" y="400" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-weight="bold" font-family="DM Sans" pointer-events="none" id="lbl-paint" opacity="0">Paint</text>
-        <text x="190" y="460" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-block" opacity="0">L Block</text>
-        <text x="310" y="460" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-block" opacity="0">R Block</text>
-        <text x="185" y="330" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-elbow" opacity="0">L Elbow</text>
-        <text x="315" y="330" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-elbow" opacity="0">R Elbow</text>
-        <text x="250" y="325" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-ft-line" opacity="0">FT Line</text>
-        <text x="82" y="420" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-mid" opacity="0">L Mid</text>
-        <text x="418" y="420" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-mid" opacity="0">R Mid</text>
-        <text x="25" y="380" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-left-corner-3" opacity="0">L Cor</text>
-        <text x="475" y="380" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-right-corner-3" opacity="0">R Cor</text>
-        <text x="75" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-wing-3" opacity="0">L Wing</text>
-        <text x="425" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-wing-3" opacity="0">R Wing</text>
-        <text x="250" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-top-key-3" opacity="0">Top Key</text>
-        <text x="250" y="70" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-above-arc" opacity="0">Above Arc</text>
+        <!-- Scoring zone dots (populated by JS) -->
+        <g id="zone-dots-layer"></g>
 
         <!-- Player markers layer (populated by JS) -->
         <g id="player-markers-layer"></g>
@@ -622,23 +595,6 @@ const CONCEPT_GROUPS = [
   { label: "Post Entries",        concepts: ["High Post", "Mid Post", "Low Post", "Short Corner"] }
 ];
 const CONCEPTS = CONCEPT_GROUPS.flatMap(g => g.concepts);
-
-const ZONES = [
-  { id: "paint",          label: "Paint" },
-  { id: "left-block",     label: "Left Block" },
-  { id: "right-block",    label: "Right Block" },
-  { id: "left-elbow",     label: "Left Elbow" },
-  { id: "right-elbow",    label: "Right Elbow" },
-  { id: "ft-line",        label: "Free Throw Line" },
-  { id: "left-mid",       label: "Left Mid Range" },
-  { id: "right-mid",      label: "Right Mid Range" },
-  { id: "left-corner-3",  label: "Left Corner 3" },
-  { id: "right-corner-3", label: "Right Corner 3" },
-  { id: "left-wing-3",    label: "Left Wing 3" },
-  { id: "right-wing-3",   label: "Right Wing 3" },
-  { id: "top-key-3",      label: "Top of Key 3" },
-  { id: "above-arc",      label: "Above the Arc" },
-];
 
 // Named spots on the court: {label, x, y} in SVG coords (viewBox 500x520)
 const NAMED_SPOTS = [
@@ -730,57 +686,99 @@ CONCEPT_GROUPS.forEach(group => {
   grid.appendChild(groupEl);
 });
 
+// Zones are now just the NAMED_SPOTS (minus the placeholder), rendered as dots
+const ZONES = NAMED_SPOTS.filter(s => s.x !== null).map(s => ({
+  id: s.label.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+  label: s.label,
+  x: s.x,
+  y: s.y
+}));
+
+function renderZoneDots() {
+  const layer = document.getElementById('zone-dots-layer');
+  layer.innerHTML = '';
+  ZONES.forEach(z => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('id', 'zonedot-' + z.id);
+    g.style.cursor = 'pointer';
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', z.x);
+    circle.setAttribute('cy', z.y);
+    circle.setAttribute('r', '8');
+    circle.setAttribute('fill', 'rgba(255,255,255,0.25)');
+    circle.setAttribute('stroke', 'rgba(255,255,255,0.7)');
+    circle.setAttribute('stroke-width', '1.5');
+    circle.setAttribute('id', 'zonedot-circle-' + z.id);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', z.x);
+    text.setAttribute('y', z.y - 12);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('fill', 'rgba(255,255,255,0.75)');
+    text.setAttribute('font-size', '8');
+    text.setAttribute('font-family', 'DM Sans, sans-serif');
+    text.setAttribute('pointer-events', 'none');
+    text.setAttribute('id', 'zonedot-lbl-' + z.id);
+    text.textContent = z.label;
+
+    g.appendChild(circle);
+    g.appendChild(text);
+
+    g.addEventListener('click', e => {
+      if (placingPlayer !== null) return;
+      toggleZone(z.id, !selectedZones.includes(z.id));
+      e.stopPropagation();
+    });
+
+    layer.appendChild(g);
+  });
+}
+
 // ─── BUILD ZONE CHECKLIST ────────────────────────────────────────────────────
 
 const zoneListEl = document.getElementById('zone-list');
-ZONES.forEach(z => {
-  const row = document.createElement('label');
-  row.className = 'zone-check';
-  row.id = 'chk-row-' + z.id;
-  row.innerHTML = `<input type="checkbox" id="chk-${z.id}" data-zone="${z.id}">
-    <div class="zone-dot" id="dot-${z.id}"></div>
-    <span>${z.label}</span>`;
-  row.querySelector('input').addEventListener('change', e => {
-    toggleZone(z.id, e.target.checked);
+function buildZoneChecklist() {
+  zoneListEl.innerHTML = '';
+  ZONES.forEach(z => {
+    const row = document.createElement('label');
+    row.className = 'zone-check';
+    row.id = 'chk-row-' + z.id;
+    row.innerHTML = `<input type="checkbox" id="chk-${z.id}" data-zone="${z.id}">
+      <div class="zone-dot" id="dot-${z.id}"></div>
+      <span>${z.label}</span>`;
+    row.querySelector('input').addEventListener('change', e => {
+      toggleZone(z.id, e.target.checked);
+    });
+    zoneListEl.appendChild(row);
   });
-  zoneListEl.appendChild(row);
-});
+}
 
 // ─── ZONE TOGGLE ─────────────────────────────────────────────────────────────
 
 function toggleZone(zid, checked) {
-  const overlay = document.getElementById('zone-' + zid);
-  const lbl     = document.getElementById('lbl-' + zid);
-  const dot     = document.getElementById('dot-' + zid);
-  const row     = document.getElementById('chk-row-' + zid);
-  const chk     = document.getElementById('chk-' + zid);
+  const dot  = document.getElementById('zonedot-circle-' + zid);
+  const lbl  = document.getElementById('zonedot-lbl-' + zid);
+  const row  = document.getElementById('chk-row-' + zid);
+  const chk  = document.getElementById('chk-' + zid);
+  const panelDot = document.getElementById('dot-' + zid);
   if (checked) {
     selectedZones = [...new Set([...selectedZones, zid])];
-    if (overlay) overlay.classList.add('active');
-    if (lbl) lbl.setAttribute('opacity', '1');
-    if (dot) dot.style.background = 'var(--accent2)';
+    if (dot) { dot.setAttribute('fill', 'rgba(74,158,255,0.85)'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('r', '10'); }
+    if (lbl) lbl.setAttribute('fill', '#fff');
+    if (panelDot) panelDot.style.background = 'var(--accent2)';
     if (row) row.classList.add('active');
     if (chk) chk.checked = true;
   } else {
     selectedZones = selectedZones.filter(z => z !== zid);
-    if (overlay) overlay.classList.remove('active');
-    if (lbl) lbl.setAttribute('opacity', '0');
-    if (dot) dot.style.background = 'var(--muted)';
+    if (dot) { dot.setAttribute('fill', 'rgba(255,255,255,0.25)'); dot.setAttribute('stroke', 'rgba(255,255,255,0.7)'); dot.setAttribute('r', '8'); }
+    if (lbl) lbl.setAttribute('fill', 'rgba(255,255,255,0.75)');
+    if (panelDot) panelDot.style.background = 'var(--muted)';
     if (row) row.classList.remove('active');
     if (chk) chk.checked = false;
   }
   updateSummary();
 }
-
-// Court zone click
-document.querySelectorAll('.zone-overlay').forEach(el => {
-  el.addEventListener('click', e => {
-    // If placing a player, don't toggle zone
-    if (placingPlayer !== null) return;
-    const zid = el.dataset.zone;
-    toggleZone(zid, !selectedZones.includes(zid));
-  });
-});
 
 // ─── PLAYER COUNT ────────────────────────────────────────────────────────────
 
@@ -1278,16 +1276,15 @@ document.getElementById('clear-btn').addEventListener('click', () => {
   selectedConcepts = [];
   selectedZones = [];
   document.querySelectorAll('.concept-tag').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.zone-overlay').forEach(el => {
-    el.classList.remove('active');
-    const lbl = document.getElementById('lbl-' + el.dataset.zone);
-    if (lbl) lbl.setAttribute('opacity', '0');
-  });
   ZONES.forEach(z => {
-    const dot = document.getElementById('dot-' + z.id);
+    const dot = document.getElementById('zonedot-circle-' + z.id);
+    const lbl = document.getElementById('zonedot-lbl-' + z.id);
+    const panelDot = document.getElementById('dot-' + z.id);
     const row = document.getElementById('chk-row-' + z.id);
     const chk = document.getElementById('chk-' + z.id);
-    if (dot) dot.style.background = 'var(--muted)';
+    if (dot) { dot.setAttribute('fill', 'rgba(255,255,255,0.25)'); dot.setAttribute('stroke', 'rgba(255,255,255,0.7)'); dot.setAttribute('r', '8'); }
+    if (lbl) lbl.setAttribute('fill', 'rgba(255,255,255,0.75)');
+    if (panelDot) panelDot.style.background = 'var(--muted)';
     if (row) row.classList.remove('active');
     if (chk) chk.checked = false;
   });
@@ -1307,6 +1304,8 @@ document.getElementById('clear-btn').addEventListener('click', () => {
 initPlayers(playerCount);
 renderPlayerRows();
 renderPlayerMarkers();
+renderZoneDots();
+buildZoneChecklist();
 updateSummary();
 
 </script>
