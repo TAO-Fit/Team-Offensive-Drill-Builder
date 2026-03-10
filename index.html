@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Offense Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --court: #c8a96e;
+    --court-line: #fff;
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel2: #222;
+    --accent: #e8a020;
+    --accent2: #4a9eff;
+    --text: #f0f0f0;
+    --muted: #888;
+    --zone-active: rgba(232,160,32,0.85);
+    --zone-hover: rgba(232,160,32,0.4);
+    --radius: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 28px;
+    border-bottom: 1px solid #2a2a2a;
+    background: #111;
+  }
+
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  header span {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 0;
+    flex: 1;
+    height: calc(100vh - 61px);
+    overflow: hidden;
+  }
+
+  .panel {
+    background: var(--panel);
+    border-right: 1px solid #2a2a2a;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel:last-child {
+    border-right: none;
+    border-left: 1px solid #2a2a2a;
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* Concept tags */
+  .concept-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .concept-tag {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--panel2);
+    color: var(--muted);
+    user-select: none;
+  }
+
+  .concept-tag:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .concept-tag.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #111;
+    font-weight: 600;
+  }
+
+  /* Zone checklist */
+  .zone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .zone-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13px;
+  }
+
+  .zone-check:hover { background: #2a2a2a; }
+
+  .zone-check input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .zone-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .zone-check.active .zone-dot { background: var(--accent); }
+
+  /* Center court area */
+  .court-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #141414;
+    gap: 16px;
+  }
+
+  .court-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  #court-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .zone-overlay {
+    cursor: pointer;
+    transition: opacity 0.15s;
+    opacity: 0;
+  }
+
+  .zone-overlay:hover { opacity: 1; fill: var(--zone-hover); }
+  .zone-overlay.active { opacity: 1; fill: var(--zone-active); }
+
+  .court-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    align-items: center;
+  }
+
+  .court-legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Drill config */
+  .config-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  select, input[type="number"], textarea {
+    background: var(--panel2);
+    border: 1px solid #333;
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 8px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+
+  textarea { resize: vertical; min-height: 60px; }
+
+  /* Output panel */
+  .drill-output {
+    background: var(--panel2);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 120px;
+    color: var(--text);
+    white-space: pre-wrap;
+    border: 1px solid #2a2a2a;
+  }
+
+  .drill-output.empty { color: var(--muted); font-style: italic; }
+
+  .output-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .output-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #111;
+    width: 100%;
+  }
+
+  .btn-primary:hover { background: #f0b030; }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid #444;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 5px 10px;
+    letter-spacing: 0;
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-copy {
+    background: transparent;
+    border: 1px solid #444;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 10px;
+    letter-spacing: 0;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-copy:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-copy.copied { border-color: #4caf50; color: #4caf50; }
+
+  /* Tags summary */
+  .summary-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 28px;
+  }
+
+  .summary-tag {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  .summary-tag.concept { border-color: var(--accent); color: var(--accent); }
+  .summary-tag.zone { border-color: var(--accent2); color: var(--accent2); }
+
+  .divider { height: 1px; background: #2a2a2a; }
+
+  /* Player count toggle */
+  .player-toggle {
+    display: flex;
+    gap: 6px;
+  }
+
+  .player-btn {
+    flex: 1;
+    padding: 6px;
+    text-align: center;
+    border-radius: var(--radius);
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--panel2);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .player-btn:hover { border-color: var(--accent); color: var(--text); }
+  .player-btn.active { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 600; }
+
+  scrollbar-width: thin;
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AWS Offense Builder</h1>
+  <span>Team Drill Designer</span>
+</header>
+
+<div class="main">
+
+  <!-- LEFT PANEL: Concepts + Config -->
+  <div class="panel">
+    <div class="panel-title">Drill Setup</div>
+
+    <div>
+      <div class="section-label">Offensive Concept</div>
+      <div class="concept-grid" id="concept-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-label">Players</div>
+      <div class="player-toggle" id="player-toggle">
+        <div class="player-btn" data-val="2v0">2v0</div>
+        <div class="player-btn" data-val="3v0">3v0</div>
+        <div class="player-btn" data-val="4v0">4v0</div>
+        <div class="player-btn" data-val="5v0">5v0</div>
+        <div class="player-btn" data-val="2v2">2v2</div>
+        <div class="player-btn" data-val="3v3">3v3</div>
+        <div class="player-btn" data-val="4v4">4v4</div>
+        <div class="player-btn" data-val="5v5">5v5</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="config-row">
+      <div class="section-label">Tier</div>
+      <select id="tier">
+        <option value="any">All Tiers</option>
+        <option value="ms">Middle School (6–8)</option>
+        <option value="hs">High School (9–12)</option>
+      </select>
+    </div>
+
+    <div class="config-row">
+      <div class="section-label">Reps / Duration</div>
+      <select id="reps">
+        <option value="5 reps each side">5 reps each side</option>
+        <option value="10 reps each side">10 reps each side</option>
+        <option value="3 minutes">3 minutes</option>
+        <option value="5 minutes">5 minutes</option>
+        <option value="First to 5">First to 5</option>
+        <option value="First to 10">First to 10</option>
+      </select>
+    </div>
+
+    <div class="config-row">
+      <div class="section-label">Constraint / Condition (optional)</div>
+      <textarea id="constraint" placeholder="e.g. no dribble off the catch, must skip pass before attacking, defense ball-you-man..."></textarea>
+    </div>
+
+    <button class="btn btn-primary" id="build-btn">BUILD DRILL</button>
+  </div>
+
+  <!-- CENTER: Court -->
+  <div class="court-area">
+    <div class="court-wrap">
+      <svg id="court-svg" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Court background -->
+        <rect width="400" height="380" fill="#b89050" rx="4"/>
+
+        <!-- Court floor -->
+        <rect x="20" y="10" width="360" height="360" fill="#c8a96e" stroke="#fff" stroke-width="2" rx="2"/>
+
+        <!-- Half court line -->
+        <line x1="20" y1="190" x2="380" y2="190" stroke="#fff" stroke-width="1.5"/>
+
+        <!-- Center circle -->
+        <circle cx="200" cy="190" r="30" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <circle cx="200" cy="190" r="3" fill="#fff"/>
+
+        <!-- TOP KEY (offense end - top) -->
+        <rect x="130" y="10" width="140" height="120" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <!-- Free throw circle -->
+        <path d="M 130 130 A 70 70 0 0 1 270 130" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <!-- Basket -->
+        <circle cx="200" cy="30" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="200" y1="10" x2="200" y2="38" stroke="#fff" stroke-width="1.5"/>
+        <!-- Backboard -->
+        <line x1="170" y1="12" x2="230" y2="12" stroke="#fff" stroke-width="3"/>
+        <!-- 3pt arc top -->
+        <path d="M 70 130 L 70 40 A 135 135 0 0 1 330 40 L 330 130" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <!-- Restricted area top -->
+        <path d="M 175 30 A 25 25 0 0 1 225 30" fill="none" stroke="#fff" stroke-width="1"/>
+
+        <!-- BOTTOM KEY (other end) -->
+        <rect x="130" y="250" width="140" height="120" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <path d="M 130 250 A 70 70 0 0 0 270 250" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <circle cx="200" cy="350" r="8" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="200" y1="342" x2="200" y2="370" stroke="#fff" stroke-width="1.5"/>
+        <line x1="170" y1="368" x2="230" y2="368" stroke="#fff" stroke-width="3"/>
+        <path d="M 70 250 L 70 340 A 135 135 0 0 0 330 340 L 330 250" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <path d="M 175 350 A 25 25 0 0 0 225 350" fill="none" stroke="#fff" stroke-width="1"/>
+
+        <!-- CLICKABLE ZONES (top half - offense) -->
+        <!-- Zone 1: Restricted area / paint center -->
+        <rect class="zone-overlay" id="zone-paint" x="155" y="10" width="90" height="90" data-zone="paint" data-label="Paint / Restricted Area"/>
+        <!-- Zone 2: Left block -->
+        <rect class="zone-overlay" id="zone-left-block" x="130" y="80" width="45" height="50" data-zone="left-block" data-label="Left Block"/>
+        <!-- Zone 3: Right block -->
+        <rect class="zone-overlay" id="zone-right-block" x="225" y="80" width="45" height="50" data-zone="right-block" data-label="Right Block"/>
+        <!-- Zone 4: Left elbow -->
+        <rect class="zone-overlay" id="zone-left-elbow" x="130" y="110" width="55" height="40" data-zone="left-elbow" data-label="Left Elbow"/>
+        <!-- Zone 5: Right elbow -->
+        <rect class="zone-overlay" id="zone-right-elbow" x="215" y="110" width="55" height="40" data-zone="right-elbow" data-label="Right Elbow"/>
+        <!-- Zone 6: Free throw line -->
+        <rect class="zone-overlay" id="zone-ft" x="155" y="110" width="90" height="30" data-zone="ft-line" data-label="Free Throw Line"/>
+        <!-- Zone 7: Left mid range -->
+        <path class="zone-overlay" id="zone-left-mid" d="M 70 130 L 130 130 L 130 80 L 70 80 Z" data-zone="left-mid" data-label="Left Mid Range"/>
+        <!-- Zone 8: Right mid range -->
+        <path class="zone-overlay" id="zone-right-mid" d="M 270 130 L 330 130 L 330 80 L 270 80 Z" data-zone="right-mid" data-label="Right Mid Range"/>
+        <!-- Zone 9: Left corner 3 -->
+        <rect class="zone-overlay" id="zone-left-corner" x="20" y="40" width="50" height="100" data-zone="left-corner-3" data-label="Left Corner 3"/>
+        <!-- Zone 10: Right corner 3 -->
+        <rect class="zone-overlay" id="zone-right-corner" x="330" y="40" width="50" height="100" data-zone="right-corner-3" data-label="Right Corner 3"/>
+        <!-- Zone 11: Left wing 3 -->
+        <path class="zone-overlay" id="zone-left-wing" d="M 20 140 L 70 140 L 70 130 A 135 135 0 0 1 110 60 L 70 40 L 20 40 Z" data-zone="left-wing-3" data-label="Left Wing 3"/>
+        <!-- Zone 12: Right wing 3 -->
+        <path class="zone-overlay" id="zone-right-wing" d="M 380 140 L 330 140 L 330 130 A 135 135 0 0 0 290 60 L 330 40 L 380 40 Z" data-zone="right-wing-3" data-label="Right Wing 3"/>
+        <!-- Zone 13: Top of key 3 -->
+        <path class="zone-overlay" id="zone-top-3" d="M 110 145 A 135 135 0 0 1 290 145 L 270 130 A 70 70 0 0 0 130 130 Z" data-zone="top-key-3" data-label="Top of Key 3"/>
+
+        <!-- Zone labels (shown on hover / active) -->
+        <text x="200" y="60" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-paint" opacity="0">Paint</text>
+        <text x="152" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-block" opacity="0">L Block</text>
+        <text x="248" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-block" opacity="0">R Block</text>
+        <text x="157" y="128" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-elbow" opacity="0">L Elbow</text>
+        <text x="243" y="128" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-elbow" opacity="0">R Elbow</text>
+        <text x="200" y="130" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-ft-line" opacity="0">FT Line</text>
+        <text x="100" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-mid" opacity="0">L Mid</text>
+        <text x="300" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-mid" opacity="0">R Mid</text>
+        <text x="45" y="95" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-corner-3" opacity="0">L Corner</text>
+        <text x="355" y="95" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-corner-3" opacity="0">R Corner</text>
+        <text x="47" y="140" text-anchor="middle" fill="#111" font-size="7" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-wing-3" opacity="0">L Wing</text>
+        <text x="353" y="140" text-anchor="middle" fill="#111" font-size="7" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-wing-3" opacity="0">R Wing</text>
+        <text x="200" y="143" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-top-key-3" opacity="0">Top Key</text>
+      </svg>
+    </div>
+
+    <div class="court-legend">
+      <span><div class="legend-dot" style="background:var(--accent)"></div> Selected zone</span>
+      <span style="color:var(--muted);font-size:11px">Click zones to select scoring targets</span>
+    </div>
+
+    <!-- Summary -->
+    <div style="width:100%;max-width:500px;display:flex;flex-direction:column;gap:8px;">
+      <div class="section-label">Selected</div>
+      <div class="summary-tags" id="summary-tags">
+        <span style="font-size:12px;color:var(--muted);font-style:italic">No concepts or zones selected</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Output -->
+  <div class="panel">
+    <div class="panel-title">Drill Output</div>
+
+    <div class="output-section">
+      <div class="output-label">
+        <div class="section-label">Drill Name</div>
+      </div>
+      <div class="drill-output empty" id="out-name">Build a drill to see output</div>
+    </div>
+
+    <div class="output-section">
+      <div class="section-label">Setup</div>
+      <div class="drill-output empty" id="out-setup">—</div>
+    </div>
+
+    <div class="output-section">
+      <div class="section-label">Execution</div>
+      <div class="drill-output empty" id="out-execution">—</div>
+    </div>
+
+    <div class="output-section">
+      <div class="section-label">Coaching Points</div>
+      <div class="drill-output empty" id="out-coaching">—</div>
+    </div>
+
+    <div class="output-section">
+      <div class="section-label">Scoring / Constraint</div>
+      <div class="drill-output empty" id="out-scoring">—</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-copy" id="copy-btn" style="flex:1">COPY DRILL</button>
+      <button class="btn btn-secondary" id="clear-btn">CLEAR</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="output-section">
+      <div class="section-label">Saved Drills</div>
+      <div id="saved-list" style="display:flex;flex-direction:column;gap:6px;min-height:40px;">
+        <span style="font-size:12px;color:var(--muted);font-style:italic">No saved drills yet</span>
+      </div>
+      <button class="btn btn-secondary" id="save-btn" style="margin-top:8px;width:100%">SAVE DRILL</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CONCEPTS = [
+  "Pick & Roll","Pick & Pop","DHO","Back Door Cut","V-Cut",
+  "Flex Cut","Curl Cut","Fade Cut","Pin Down","Stagger Screen",
+  "Spain Pick","Horns","Zipper","Floppy","BLOB",
+  "Early Offense","Transition","Drive & Kick","Post Entry","Lob",
+  "High-Low","4-Out 1-In","5-Out","3-Out 2-In","Elbow Action"
+];
+
+const ZONES = [
+  { id: "paint",         label: "Paint / Restricted Area" },
+  { id: "left-block",    label: "Left Block" },
+  { id: "right-block",   label: "Right Block" },
+  { id: "left-elbow",    label: "Left Elbow" },
+  { id: "right-elbow",   label: "Right Elbow" },
+  { id: "ft-line",       label: "Free Throw Line" },
+  { id: "left-mid",      label: "Left Mid Range" },
+  { id: "right-mid",     label: "Right Mid Range" },
+  { id: "left-corner-3", label: "Left Corner 3" },
+  { id: "right-corner-3",label: "Right Corner 3" },
+  { id: "left-wing-3",   label: "Left Wing 3" },
+  { id: "right-wing-3",  label: "Right Wing 3" },
+  { id: "top-key-3",     label: "Top of Key 3" },
+];
+
+let selectedConcepts = [];
+let selectedZones = [];
+let selectedPlayers = null;
+let savedDrills = [];
+
+// Build concept grid
+const grid = document.getElementById('concept-grid');
+CONCEPTS.forEach(c => {
+  const tag = document.createElement('div');
+  tag.className = 'concept-tag';
+  tag.textContent = c;
+  tag.addEventListener('click', () => toggleConcept(c, tag));
+  grid.appendChild(tag);
+});
+
+// Build zone checklist (right panel but here we add it to left)
+// Actually zone checklist goes in the right panel — let's inject it into left panel below concepts
+const leftPanel = document.querySelector('.panel');
+const zoneSection = document.createElement('div');
+zoneSection.innerHTML = `<div class="divider"></div><div class="section-label" style="margin-bottom:8px">Scoring Zones (checklist)</div><div class="zone-list" id="zone-list"></div>`;
+leftPanel.insertBefore(zoneSection, document.getElementById('build-btn').parentNode ? document.getElementById('build-btn') : leftPanel.lastChild);
+// Re-insert before build button
+leftPanel.insertBefore(zoneSection, document.getElementById('build-btn'));
+
+const zoneListEl = document.getElementById('zone-list');
+ZONES.forEach(z => {
+  const row = document.createElement('label');
+  row.className = 'zone-check';
+  row.id = 'chk-row-' + z.id;
+  row.innerHTML = `<input type="checkbox" id="chk-${z.id}" data-zone="${z.id}"> <div class="zone-dot" id="dot-${z.id}"></div> <span>${z.label}</span>`;
+  row.querySelector('input').addEventListener('change', (e) => toggleZoneById(z.id, e.target.checked));
+  zoneListEl.appendChild(row);
+});
+
+// Player toggle
+document.querySelectorAll('.player-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedPlayers = btn.dataset.val;
+    updateSummary();
+  });
+});
+
+// Court zone click
+document.querySelectorAll('.zone-overlay').forEach(el => {
+  el.addEventListener('click', () => {
+    const zid = el.dataset.zone;
+    const isActive = el.classList.contains('active');
+    if (isActive) {
+      el.classList.remove('active');
+      selectedZones = selectedZones.filter(z => z !== zid);
+      // sync label
+      const lbl = document.getElementById('lbl-' + zid);
+      if (lbl) lbl.setAttribute('opacity', '0');
+    } else {
+      el.classList.add('active');
+      if (!selectedZones.includes(zid)) selectedZones.push(zid);
+      const lbl = document.getElementById('lbl-' + zid);
+      if (lbl) lbl.setAttribute('opacity', '1');
+    }
+    syncCheckboxFromZone(zid, !isActive);
+    updateSummary();
+  });
+});
+
+function toggleZoneById(zid, checked) {
+  const overlay = document.getElementById('zone-' + zid);
+  const lbl = document.getElementById('lbl-' + zid);
+  if (checked) {
+    selectedZones = [...new Set([...selectedZones, zid])];
+    if (overlay) overlay.classList.add('active');
+    if (lbl) lbl.setAttribute('opacity', '1');
+  } else {
+    selectedZones = selectedZones.filter(z => z !== zid);
+    if (overlay) overlay.classList.remove('active');
+    if (lbl) lbl.setAttribute('opacity', '0');
+  }
+  const dotEl = document.getElementById('dot-' + zid);
+  const rowEl = document.getElementById('chk-row-' + zid);
+  if (dotEl) dotEl.style.background = checked ? 'var(--accent)' : 'var(--muted)';
+  if (rowEl) rowEl.classList.toggle('active', checked);
+  updateSummary();
+}
+
+function syncCheckboxFromZone(zid, checked) {
+  const chk = document.getElementById('chk-' + zid);
+  if (chk) chk.checked = checked;
+  const dotEl = document.getElementById('dot-' + zid);
+  const rowEl = document.getElementById('chk-row-' + zid);
+  if (dotEl) dotEl.style.background = checked ? 'var(--accent)' : 'var(--muted)';
+  if (rowEl) rowEl.classList.toggle('active', checked);
+}
+
+function toggleConcept(c, el) {
+  if (selectedConcepts.includes(c)) {
+    selectedConcepts = selectedConcepts.filter(x => x !== c);
+    el.classList.remove('active');
+  } else {
+    selectedConcepts.push(c);
+    el.classList.add('active');
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  const container = document.getElementById('summary-tags');
+  container.innerHTML = '';
+  if (!selectedConcepts.length && !selectedZones.length && !selectedPlayers) {
+    container.innerHTML = '<span style="font-size:12px;color:var(--muted);font-style:italic">No concepts or zones selected</span>';
+    return;
+  }
+  if (selectedPlayers) {
+    const t = document.createElement('span');
+    t.className = 'summary-tag';
+    t.textContent = selectedPlayers;
+    container.appendChild(t);
+  }
+  selectedConcepts.forEach(c => {
+    const t = document.createElement('span');
+    t.className = 'summary-tag concept';
+    t.textContent = c;
+    container.appendChild(t);
+  });
+  selectedZones.forEach(z => {
+    const zObj = ZONES.find(x => x.id === z);
+    const t = document.createElement('span');
+    t.className = 'summary-tag zone';
+    t.textContent = zObj ? zObj.label : z;
+    container.appendChild(t);
+  });
+}
+
+// Build drill logic
+document.getElementById('build-btn').addEventListener('click', buildDrill);
+
+function buildDrill() {
+  if (!selectedConcepts.length && !selectedZones.length) {
+    setOutput('Select at least one concept or zone to build a drill.', true);
+    return;
+  }
+
+  const players = selectedPlayers || '5v5';
+  const tier = document.getElementById('tier').value;
+  const reps = document.getElementById('reps').value;
+  const constraint = document.getElementById('constraint').value.trim();
+  const concepts = selectedConcepts.length ? selectedConcepts : ['General Offense'];
+  const zones = selectedZones.map(z => ZONES.find(x => x.id === z)?.label || z);
+  const tierLabel = tier === 'ms' ? 'Middle School' : tier === 'hs' ? 'High School' : 'All Tiers';
+
+  const drillData = generateDrill(concepts, zones, players, tierLabel, reps, constraint);
+
+  document.getElementById('out-name').textContent = drillData.name;
+  document.getElementById('out-name').classList.remove('empty');
+  document.getElementById('out-setup').textContent = drillData.setup;
+  document.getElementById('out-setup').classList.remove('empty');
+  document.getElementById('out-execution').textContent = drillData.execution;
+  document.getElementById('out-execution').classList.remove('empty');
+  document.getElementById('out-coaching').textContent = drillData.coaching;
+  document.getElementById('out-coaching').classList.remove('empty');
+  document.getElementById('out-scoring').textContent = drillData.scoring;
+  document.getElementById('out-scoring').classList.remove('empty');
+}
+
+function generateDrill(concepts, zones, players, tier, reps, constraint) {
+  const conceptStr = concepts.join(' + ');
+  const zoneStr = zones.length ? zones.join(', ') : 'open floor';
+  const isLive = players.includes('v') && !players.includes('v0');
+  const offense = players.split('v')[0];
+  const defense = players.split('v')[1];
+
+  // Drill name
+  const name = `${conceptStr} — ${zoneStr} (${players})`;
+
+  // Setup
+  let setup = `Players: ${players} (${tier})\n`;
+  setup += `Scoring targets: ${zoneStr}\n`;
+  setup += `Reps / Duration: ${reps}\n`;
+  if (isLive) {
+    setup += `Defense starts in help-side position. Offense starts with the ball at top of key or ball screen entry point.`;
+  } else {
+    setup += `Walk through at half speed first. Then full speed.`;
+  }
+
+  // Execution — concept-specific
+  let execution = '';
+
+  if (concepts.includes('Pick & Roll') || concepts.includes('Pick & Pop')) {
+    const action = concepts.includes('Pick & Pop') ? 'pop to' : 'roll to';
+    execution += `Ball handler starts at the top. Big sets a ball screen at the elbow or wing.\n`;
+    execution += `Ball handler reads the coverage — turn corner on hedged, reject on icing.\n`;
+    execution += `Big ${action} ${zoneStr}. Ball handler attacks downhill or kicks to the pop.\n`;
+  }
+  if (concepts.includes('DHO')) {
+    execution += `Handler dribble hand-offs to cutter coming off the hip. \n`;
+    execution += `Receiver reads the defense — curl to the rim, flat cut for mid, or reject for 3.\n`;
+    execution += `Attack scoring targets: ${zoneStr}.\n`;
+  }
+  if (concepts.includes('Back Door Cut')) {
+    execution += `Wing or corner player shows high, then cuts back door hard off the pass fake.\n`;
+    execution += `Passer reads the cut and delivers a lead pass for the finish.\n`;
+    execution += `Target zones: ${zoneStr}.\n`;
+  }
+  if (concepts.includes('Drive & Kick')) {
+    execution += `Ball handler attacks paint off the dribble, drawing the defense.\n`;
+    execution += `Kick to shooter spotting up at: ${zoneStr}.\n`;
+    execution += `Catch-and-shoot or one dribble pull-up only.\n`;
+  }
+  if (concepts.includes('Pin Down')) {
+    execution += `Screener sets a pin-down screen on the block for a shooter coming up.\n`;
+    execution += `Shooter reads defender — curl if trailing, fade if chasing, flat if fronting.\n`;
+    execution += `Catch and attack target zone: ${zoneStr}.\n`;
+  }
+  if (concepts.includes('Horns')) {
+    execution += `Two bigs set up at each elbow. Guard enters the ball to one elbow.\n`;
+    execution += `Options: hand-off, pick & roll with far big, skip to corner, or post entry.\n`;
+    execution += `Scoring targets off the action: ${zoneStr}.\n`;
+  }
+  if (!execution) {
+    execution += `Offense executes ${conceptStr} with the goal of generating a scoring opportunity at ${zoneStr}.\n`;
+    execution += `Players rotate through positions after each possession.`;
+  }
+
+  execution += `\nRotation: ${reps}. Offense and defense swap after each round.`;
+
+  // Coaching points
+  let coaching = '';
+  coaching += `• Read the defense before the action — anticipate, do not react.\n`;
+  if (concepts.includes('Pick & Roll') || concepts.includes('Pick & Pop')) {
+    coaching += `• Ball handler: stay low off the screen, shoulder-to-shoulder.\n`;
+    coaching += `• Big: set hard screen, hold until contact is made before rolling or popping.\n`;
+  }
+  if (concepts.includes('Back Door Cut')) {
+    coaching += `• Timing is everything — the cut starts when the defender turns their head.\n`;
+    coaching += `• Passer: do not stare the cutter down. Sell the denial, then deliver.\n`;
+  }
+  if (concepts.includes('Drive & Kick')) {
+    coaching += `• Shooters: be ready before the drive. Feet set on the catch.\n`;
+    coaching += `• Driver: get to the paint, draw contact or draw help, then kick.\n`;
+  }
+  coaching += `• Attack the target zones — do not settle for contested looks outside the plan.\n`;
+  coaching += `• Tier note (${tier}): ${tier === 'Middle School' ? 'Simplify if needed — walk through then speed up.' : tier === 'High School' ? 'Run at game speed. No walk-throughs after rep 1.' : 'Adjust pace by individual level.'}`;
+
+  // Scoring
+  let scoring = `Reps: ${reps}\n`;
+  if (constraint) scoring += `Constraint: ${constraint}\n`;
+  if (isLive) {
+    scoring += `Live scoring. Defense wins if they force a shot outside the target zones or a turnover.\n`;
+    scoring += `Track: makes at target zone vs. forced misses. Goal — 60%+ at designed spots.`;
+  } else {
+    scoring += `Make tracking: count makes at each target zone. Set a goal (e.g., 7/10 at each zone before rotating).`;
+  }
+
+  return { name, setup, execution, coaching, scoring };
+}
+
+function setOutput(msg, empty = false) {
+  ['out-name','out-setup','out-execution','out-coaching','out-scoring'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.toggle('empty', empty);
+  });
+}
+
+// Copy
+document.getElementById('copy-btn').addEventListener('click', () => {
+  const name = document.getElementById('out-name').textContent;
+  const setup = document.getElementById('out-setup').textContent;
+  const exec = document.getElementById('out-execution').textContent;
+  const coach = document.getElementById('out-coaching').textContent;
+  const score = document.getElementById('out-scoring').textContent;
+  if (name === 'Build a drill to see output') return;
+  const text = `AWS OFFENSE BUILDER\n${'='.repeat(40)}\n\nDRILL: ${name}\n\nSETUP\n${setup}\n\nEXECUTION\n${exec}\n\nCOACHING POINTS\n${coach}\n\nSCORING / CONSTRAINT\n${score}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'COPIED!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPY DRILL'; btn.classList.remove('copied'); }, 2000);
+  });
+});
+
+// Save
+document.getElementById('save-btn').addEventListener('click', () => {
+  const name = document.getElementById('out-name').textContent;
+  if (!name || name === 'Build a drill to see output') return;
+  if (savedDrills.find(d => d.name === name)) return;
+  savedDrills.push({
+    name,
+    setup: document.getElementById('out-setup').textContent,
+    execution: document.getElementById('out-execution').textContent,
+    coaching: document.getElementById('out-coaching').textContent,
+    scoring: document.getElementById('out-scoring').textContent,
+  });
+  renderSaved();
+});
+
+function renderSaved() {
+  const list = document.getElementById('saved-list');
+  if (!savedDrills.length) {
+    list.innerHTML = '<span style="font-size:12px;color:var(--muted);font-style:italic">No saved drills yet</span>';
+    return;
+  }
+  list.innerHTML = '';
+  savedDrills.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    row.innerHTML = `<button class="btn-secondary" style="flex:1;text-align:left;padding:5px 8px;font-size:11px;border:1px solid #333;border-radius:4px;background:#1a1a1a;color:#ccc;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${d.name}</button><button class="btn-secondary" style="padding:4px 7px;font-size:10px;border:1px solid #333;border-radius:4px;background:transparent;color:#888;cursor:pointer;" data-idx="${i}">✕</button>`;
+    row.querySelector('button:first-child').addEventListener('click', () => loadDrill(d));
+    row.querySelector('button:last-child').addEventListener('click', () => { savedDrills.splice(i,1); renderSaved(); });
+    list.appendChild(row);
+  });
+}
+
+function loadDrill(d) {
+  document.getElementById('out-name').textContent = d.name;
+  document.getElementById('out-name').classList.remove('empty');
+  document.getElementById('out-setup').textContent = d.setup;
+  document.getElementById('out-setup').classList.remove('empty');
+  document.getElementById('out-execution').textContent = d.execution;
+  document.getElementById('out-execution').classList.remove('empty');
+  document.getElementById('out-coaching').textContent = d.coaching;
+  document.getElementById('out-coaching').classList.remove('empty');
+  document.getElementById('out-scoring').textContent = d.scoring;
+  document.getElementById('out-scoring').classList.remove('empty');
+}
+
+// Clear
+document.getElementById('clear-btn').addEventListener('click', () => {
+  selectedConcepts = [];
+  selectedZones = [];
+  selectedPlayers = null;
+  document.querySelectorAll('.concept-tag').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.zone-overlay').forEach(el => {
+    el.classList.remove('active');
+    const lbl = document.getElementById('lbl-' + el.dataset.zone);
+    if (lbl) lbl.setAttribute('opacity', '0');
+  });
+  document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+  document.querySelectorAll('.zone-dot').forEach(d => d.style.background = 'var(--muted)');
+  document.querySelectorAll('.zone-check').forEach(r => r.classList.remove('active'));
+  document.getElementById('constraint').value = '';
+  updateSummary();
+  setOutput('Build a drill to see output', true);
+  ['out-setup','out-execution','out-coaching','out-scoring'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).classList.add('empty');
+  });
+});
+</script>
+</body>
+</html>
