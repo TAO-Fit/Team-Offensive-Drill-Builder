@@ -7,8 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --court: #c8a96e;
-    --court-line: #fff;
     --bg: #0f0f0f;
     --panel: #1a1a1a;
     --panel2: #222;
@@ -16,8 +14,6 @@
     --accent2: #4a9eff;
     --text: #f0f0f0;
     --muted: #888;
-    --zone-active: rgba(232,160,32,0.85);
-    --zone-hover: rgba(232,160,32,0.4);
     --radius: 6px;
   }
 
@@ -58,7 +54,6 @@
   .main {
     display: grid;
     grid-template-columns: 300px 1fr 300px;
-    gap: 0;
     flex: 1;
     height: calc(100vh - 61px);
     overflow: hidden;
@@ -71,7 +66,7 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
 
   .panel:last-child {
@@ -93,92 +88,175 @@
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: var(--muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
-  /* Concept tags */
-  .concept-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .divider { height: 1px; background: #2a2a2a; }
 
+  /* Concept groups */
+  .concept-grid { display: flex; flex-direction: column; gap: 10px; }
+  .concept-group { display: flex; flex-direction: column; gap: 5px; }
+  .concept-group-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .concept-group-tags { display: flex; flex-wrap: wrap; gap: 5px; }
   .concept-tag {
-    padding: 5px 10px;
+    padding: 4px 9px;
     border-radius: 4px;
     border: 1px solid #333;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
-    transition: all 0.15s;
     background: var(--panel2);
     color: var(--muted);
     user-select: none;
+    transition: all 0.15s;
   }
+  .concept-tag:hover { border-color: var(--accent); color: var(--text); }
+  .concept-tag.active { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 600; }
 
-  .concept-tag:hover {
-    border-color: var(--accent);
-    color: var(--text);
+  /* Player count toggle */
+  .player-count-row {
+    display: flex;
+    gap: 6px;
   }
-
-  .concept-tag.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #111;
+  .pcount-btn {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: var(--radius);
+    border: 1px solid #333;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: 600;
+    color: var(--muted);
+    background: var(--panel2);
+    transition: all 0.15s;
+    user-select: none;
   }
+  .pcount-btn:hover { border-color: var(--accent); color: var(--text); }
+  .pcount-btn.active { background: var(--accent); border-color: var(--accent); color: #111; }
 
-  /* Zone checklist */
-  .zone-list {
+  /* Player rows */
+  .player-rows { display: flex; flex-direction: column; gap: 8px; }
+  .player-row {
+    background: var(--panel2);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 8px 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
+  .player-row-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .player-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: #111;
+  }
+  .player-row select {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--text);
+    font-size: 11px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .player-row select:focus { outline: none; border-color: var(--accent); }
+  .player-row-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
+  /* Defense toggle */
+  .def-toggle { display: flex; gap: 6px; flex-wrap: wrap; }
+  .def-btn {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    font-size: 11px;
+    cursor: pointer;
+    background: var(--panel2);
+    color: var(--muted);
+    user-select: none;
+    transition: all 0.15s;
+  }
+  .def-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .def-btn.active { background: var(--accent2); border-color: var(--accent2); color: #111; font-weight: 600; }
+
+  /* Config rows */
+  .config-row { display: flex; flex-direction: column; gap: 4px; }
+  .config-row select, .config-row textarea {
+    background: var(--panel2);
+    border: 1px solid #333;
+    color: var(--text);
+    font-size: 12px;
+    padding: 7px 9px;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+  }
+  .config-row textarea { resize: vertical; min-height: 60px; }
+  .config-row select:focus, .config-row textarea:focus { outline: none; border-color: var(--accent); }
+
+  /* Zone checklist */
+  .zone-list { display: flex; flex-direction: column; gap: 5px; }
   .zone-check {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 10px;
-    border-radius: var(--radius);
+    padding: 5px 6px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background 0.15s;
-    font-size: 13px;
+    font-size: 12px;
+    color: var(--text);
+    transition: background 0.1s;
   }
-
   .zone-check:hover { background: #2a2a2a; }
-
-  .zone-check input[type="checkbox"] {
-    accent-color: var(--accent);
-    width: 14px;
-    height: 14px;
-    cursor: pointer;
-  }
-
+  .zone-check input[type="checkbox"] { display: none; }
   .zone-dot {
-    width: 10px;
-    height: 10px;
+    width: 9px; height: 9px;
     border-radius: 50%;
     background: var(--muted);
     flex-shrink: 0;
+    transition: background 0.15s;
   }
+  .zone-check.active .zone-dot { background: var(--accent2); }
 
-  .zone-check.active .zone-dot { background: var(--accent); }
-
-  /* Center court area */
+  /* Court area */
   .court-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 24px;
+    justify-content: flex-start;
+    padding: 20px;
     background: #141414;
-    gap: 16px;
+    gap: 12px;
+    overflow-y: auto;
   }
 
   .court-wrap {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
   }
 
   #court-svg {
@@ -186,81 +264,73 @@
     height: auto;
     display: block;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .zone-overlay {
     cursor: pointer;
-    transition: opacity 0.15s;
-    opacity: 0;
+    fill: transparent;
+    transition: fill 0.15s;
   }
+  .zone-overlay:hover { fill: rgba(74,158,255,0.25); }
+  .zone-overlay.active { fill: rgba(74,158,255,0.4); }
 
-  .zone-overlay:hover { opacity: 1; fill: var(--zone-hover); }
-  .zone-overlay.active { opacity: 1; fill: var(--zone-active); }
+  /* Player markers on SVG */
+  .player-marker { cursor: move; }
+  .player-marker circle { transition: r 0.15s; }
+  .player-marker:hover circle { r: 17; }
+  .player-marker.placing { cursor: crosshair; }
 
+  /* Court legend */
   .court-legend {
     display: flex;
     gap: 16px;
     font-size: 11px;
     color: var(--muted);
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    vertical-align: middle;
   }
 
-  .court-legend span { display: flex; align-items: center; gap: 5px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-  /* Drill config */
-  .config-row {
+  /* Summary tags */
+  .summary-tags {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 24px;
   }
-
-  select, input[type="number"], textarea {
-    background: var(--panel2);
-    border: 1px solid #333;
-    border-radius: var(--radius);
-    color: var(--text);
-    padding: 8px 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.15s;
+  .summary-tag {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-size: 11px;
   }
+  .summary-tag.concept { border-color: var(--accent); color: var(--accent); }
+  .summary-tag.zone { border-color: var(--accent2); color: var(--accent2); }
+  .summary-tag.player { border-color: #888; color: #ccc; }
 
-  select:focus, input:focus, textarea:focus {
-    border-color: var(--accent);
-  }
-
-  textarea { resize: vertical; min-height: 60px; }
-
-  /* Output panel */
+  /* Output */
+  .output-section { display: flex; flex-direction: column; gap: 4px; }
   .drill-output {
     background: var(--panel2);
-    border-radius: var(--radius);
-    padding: 14px;
-    font-size: 13px;
-    line-height: 1.7;
-    min-height: 120px;
-    color: var(--text);
-    white-space: pre-wrap;
     border: 1px solid #2a2a2a;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    min-height: 40px;
+    color: var(--text);
   }
-
   .drill-output.empty { color: var(--muted); font-style: italic; }
-
-  .output-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .output-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  .output-label { display: flex; align-items: center; justify-content: space-between; }
 
   /* Buttons */
   .btn {
@@ -273,15 +343,8 @@
     letter-spacing: 1.5px;
     transition: all 0.15s;
   }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #111;
-    width: 100%;
-  }
-
+  .btn-primary { background: var(--accent); color: #111; width: 100%; }
   .btn-primary:hover { background: #f0b030; }
-
   .btn-secondary {
     background: transparent;
     border: 1px solid #444;
@@ -291,9 +354,7 @@
     padding: 5px 10px;
     letter-spacing: 0;
   }
-
   .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-
   .btn-copy {
     background: transparent;
     border: 1px solid #444;
@@ -306,54 +367,27 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-
   .btn-copy:hover { border-color: var(--accent2); color: var(--accent2); }
   .btn-copy.copied { border-color: #4caf50; color: #4caf50; }
 
-  /* Tags summary */
-  .summary-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    min-height: 28px;
-  }
-
-  .summary-tag {
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 3px;
-    padding: 2px 8px;
-    font-size: 11px;
-    color: var(--text);
-  }
-
-  .summary-tag.concept { border-color: var(--accent); color: var(--accent); }
-  .summary-tag.zone { border-color: var(--accent2); color: var(--accent2); }
-
-  .divider { height: 1px; background: #2a2a2a; }
-
-  /* Player count toggle */
-  .player-toggle {
-    display: flex;
-    gap: 6px;
-  }
-
-  .player-btn {
-    flex: 1;
-    padding: 6px;
-    text-align: center;
-    border-radius: var(--radius);
-    border: 1px solid #333;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--muted);
+  /* Saved drills */
+  .saved-item {
     background: var(--panel2);
-    transition: all 0.15s;
-    user-select: none;
+    border: 1px solid #333;
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
-
-  .player-btn:hover { border-color: var(--accent); color: var(--text); }
-  .player-btn.active { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 600; }
+  .saved-item:hover { border-color: var(--accent); }
+  .saved-item-name { flex: 1; color: var(--text); font-size: 11px; }
+  .saved-item-del { color: var(--muted); font-size: 16px; cursor: pointer; padding: 0 4px; }
+  .saved-item-del:hover { color: #ff5555; }
 
   scrollbar-width: thin;
   ::-webkit-scrollbar { width: 4px; }
@@ -370,35 +404,51 @@
 
 <div class="main">
 
-  <!-- LEFT PANEL: Concepts + Config -->
+  <!-- LEFT PANEL -->
   <div class="panel">
     <div class="panel-title">Drill Setup</div>
 
+    <!-- Offensive Concepts -->
     <div>
-      <div class="section-label">Offensive Concept</div>
-      <div class="concept-grid" id="concept-grid">
-        <!-- populated by JS -->
-      </div>
+      <div class="section-label">Offensive Concepts</div>
+      <div class="concept-grid" id="concept-grid"></div>
     </div>
 
     <div class="divider"></div>
 
+    <!-- Player Count -->
+    <div>
+      <div class="section-label">Number of Players</div>
+      <div class="player-count-row" id="player-count-row">
+        <div class="pcount-btn" data-count="2">2</div>
+        <div class="pcount-btn" data-count="3">3</div>
+        <div class="pcount-btn" data-count="4">4</div>
+        <div class="pcount-btn active" data-count="5">5</div>
+      </div>
+    </div>
+
+    <!-- Player Rows -->
     <div>
       <div class="section-label">Players</div>
-      <div class="player-toggle" id="player-toggle">
-        <div class="player-btn" data-val="2v0">2v0</div>
-        <div class="player-btn" data-val="3v0">3v0</div>
-        <div class="player-btn" data-val="4v0">4v0</div>
-        <div class="player-btn" data-val="5v0">5v0</div>
-        <div class="player-btn" data-val="2v2">2v2</div>
-        <div class="player-btn" data-val="3v3">3v3</div>
-        <div class="player-btn" data-val="4v4">4v4</div>
-        <div class="player-btn" data-val="5v5">5v5</div>
+      <div class="player-rows" id="player-rows"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Defense -->
+    <div>
+      <div class="section-label">Defense</div>
+      <div class="def-toggle" id="def-toggle">
+        <div class="def-btn active" data-val="0">No Defense</div>
+        <div class="def-btn" data-val="live">Live</div>
+        <div class="def-btn" data-val="shell">Shell</div>
+        <div class="def-btn" data-val="token">Token</div>
       </div>
     </div>
 
     <div class="divider"></div>
 
+    <!-- Reps -->
     <div class="config-row">
       <div class="section-label">Reps / Duration</div>
       <select id="reps">
@@ -411,9 +461,10 @@
       </select>
     </div>
 
+    <!-- Constraint -->
     <div class="config-row">
       <div class="section-label">Constraint / Condition (optional)</div>
-      <textarea id="constraint" placeholder="e.g. no dribble off the catch, must skip pass before attacking, defense ball-you-man..."></textarea>
+      <textarea id="constraint" placeholder="e.g. no dribble off the catch, must skip pass before attacking..."></textarea>
     </div>
 
     <button class="btn btn-primary" id="build-btn">BUILD DRILL</button>
@@ -424,25 +475,8 @@
     <div class="court-wrap">
       <svg id="court-svg" viewBox="0 0 500 520" xmlns="http://www.w3.org/2000/svg">
 
-        <!--
-          Court layout matches reference image:
-          - ViewBox 500x520, court interior x:10-490, y:10-510
-          - Basket at BOTTOM, attacking upward
-          - cx=250 (center x)
-          - Baseline y=510, top y=10
-
-          Proportions (scaled to ~47ft deep, 50ft wide):
-          - 1ft ≈ 10px
-          - Paint: 12ft wide each side of center = 120px each → x:130 to x:370, 19ft deep = 190px → y:320 to y:510
-          - FT line: y=320, FT circle radius=60px, center (250,320)
-          - Basket: 5.25ft from baseline = 52px → y=458, cx=250
-          - 3pt arc: pure semicircle radius=210px from basket center (250,458)
-          - Center half-circle at top: radius=60px center (250,10)
-        -->
-
         <!-- Court background -->
         <rect x="0" y="0" width="500" height="520" fill="#c8803a" rx="4"/>
-        <!-- Court floor -->
         <rect x="10" y="10" width="480" height="500" fill="#c8803a" stroke="#fff" stroke-width="2.5"/>
 
         <!-- Half court line at top -->
@@ -452,135 +486,77 @@
 
         <!-- PAINT (blue filled rectangle) -->
         <rect x="155" y="320" width="190" height="190" fill="#6a8faf" opacity="0.75"/>
-        <!-- Paint outline -->
         <rect x="155" y="320" width="190" height="190" fill="none" stroke="#fff" stroke-width="2.5"/>
 
-        <!-- FT circle: solid top half (above y=320), dashed bottom half (below y=320) -->
-        <!-- center (250,320), radius=75 -->
+        <!-- FT circle -->
         <path d="M 175 320 A 75 75 0 0 1 325 320" fill="none" stroke="#fff" stroke-width="2.5"/>
         <path d="M 175 320 A 75 75 0 0 0 325 320" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="8,6"/>
 
-        <!-- 3PT ARC: pure semicircle, radius=210 from basket center (250,458) -->
-        <!-- Clip to court bounds so it hits the sidelines cleanly -->
+        <!-- 3PT ARC -->
         <clipPath id="court-clip">
           <rect x="10" y="10" width="480" height="500"/>
         </clipPath>
         <circle cx="250" cy="458" r="210" fill="none" stroke="#fff" stroke-width="2.5" clip-path="url(#court-clip)"/>
 
-        <!-- BASKET: circle + T-shape, at bottom of paint -->
-        <!-- Basket circle -->
+        <!-- BASKET -->
         <circle cx="250" cy="458" r="14" fill="none" stroke="#fff" stroke-width="2.5"/>
-        <!-- Vertical post -->
         <line x1="250" y1="472" x2="250" y2="495" stroke="#fff" stroke-width="2.5"/>
-        <!-- Horizontal base (backboard) -->
         <line x1="222" y1="495" x2="278" y2="495" stroke="#fff" stroke-width="3.5"/>
 
-        <!-- ===== CLICKABLE ZONE OVERLAYS =====
-          Zones are defined relative to the court. All zones tile the half court.
-          Basket at bottom (y=510 baseline), attacking upward toward y=10.
-          Paint: x:155-345, y:320-510
-          FT line: y=320
-          3pt arc: radius 210 from (250,458)
-        -->
+        <!-- ZONE OVERLAYS -->
+        <rect class="zone-overlay" id="zone-paint" x="155" y="320" width="190" height="190" data-zone="paint" data-label="Paint"/>
+        <rect class="zone-overlay" id="zone-left-block" x="155" y="400" width="70" height="110" data-zone="left-block" data-label="Left Block"/>
+        <rect class="zone-overlay" id="zone-right-block" x="275" y="400" width="70" height="110" data-zone="right-block" data-label="Right Block"/>
+        <rect class="zone-overlay" id="zone-left-elbow" x="155" y="295" width="75" height="60" data-zone="left-elbow" data-label="Left Elbow"/>
+        <rect class="zone-overlay" id="zone-right-elbow" x="270" y="295" width="75" height="60" data-zone="right-elbow" data-label="Right Elbow"/>
+        <rect class="zone-overlay" id="zone-ft" x="195" y="285" width="110" height="70" data-zone="ft-line" data-label="Free Throw Line"/>
+        <path class="zone-overlay" id="zone-left-mid" d="M 10 510 L 155 510 L 155 320 L 10 320 Z" data-zone="left-mid" data-label="Left Mid Range"/>
+        <path class="zone-overlay" id="zone-right-mid" d="M 490 510 L 345 510 L 345 320 L 490 320 Z" data-zone="right-mid" data-label="Right Mid Range"/>
+        <path class="zone-overlay" id="zone-left-corner" d="M 10 510 L 10 248 L 40 248 L 40 510 Z" data-zone="left-corner-3" data-label="Left Corner 3"/>
+        <path class="zone-overlay" id="zone-right-corner" d="M 490 510 L 490 248 L 460 248 L 460 510 Z" data-zone="right-corner-3" data-label="Right Corner 3"/>
+        <path class="zone-overlay" id="zone-left-wing" d="M 10 248 L 10 120 A 210 210 0 0 1 250 248 L 155 320 L 10 320 Z" data-zone="left-wing-3" data-label="Left Wing 3"/>
+        <path class="zone-overlay" id="zone-right-wing" d="M 490 248 L 490 120 A 210 210 0 0 0 250 248 L 345 320 L 490 320 Z" data-zone="right-wing-3" data-label="Right Wing 3"/>
+        <path class="zone-overlay" id="zone-top-3" d="M 175 320 A 75 75 0 0 1 325 320 L 325 248 A 75 75 0 0 0 175 248 Z" data-zone="top-key-3" data-label="Top of Key 3"/>
+        <path class="zone-overlay" id="zone-above-arc" d="M 10 10 L 490 10 L 490 120 A 210 210 0 0 0 10 120 Z" data-zone="above-arc" data-label="Above the Arc"/>
 
-        <!-- 1. PAINT -->
-        <rect class="zone-overlay" id="zone-paint"
-          x="155" y="320" width="190" height="190"
-          data-zone="paint" data-label="Paint"/>
+        <!-- Zone labels -->
+        <text x="250" y="400" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-weight="bold" font-family="DM Sans" pointer-events="none" id="lbl-paint" opacity="0">Paint</text>
+        <text x="190" y="460" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-block" opacity="0">L Block</text>
+        <text x="310" y="460" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-block" opacity="0">R Block</text>
+        <text x="185" y="330" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-elbow" opacity="0">L Elbow</text>
+        <text x="315" y="330" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-elbow" opacity="0">R Elbow</text>
+        <text x="250" y="325" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-ft-line" opacity="0">FT Line</text>
+        <text x="82" y="420" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-mid" opacity="0">L Mid</text>
+        <text x="418" y="420" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-mid" opacity="0">R Mid</text>
+        <text x="25" y="380" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-left-corner-3" opacity="0">L Cor</text>
+        <text x="475" y="380" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-right-corner-3" opacity="0">R Cor</text>
+        <text x="75" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-wing-3" opacity="0">L Wing</text>
+        <text x="425" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-wing-3" opacity="0">R Wing</text>
+        <text x="250" y="290" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-top-key-3" opacity="0">Top Key</text>
+        <text x="250" y="70" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-above-arc" opacity="0">Above Arc</text>
 
-        <!-- 2. LEFT BLOCK (lower-left of paint) -->
-        <rect class="zone-overlay" id="zone-left-block"
-          x="155" y="400" width="70" height="110"
-          data-zone="left-block" data-label="Left Block"/>
+        <!-- Player markers layer (populated by JS) -->
+        <g id="player-markers-layer"></g>
 
-        <!-- 3. RIGHT BLOCK -->
-        <rect class="zone-overlay" id="zone-right-block"
-          x="275" y="400" width="70" height="110"
-          data-zone="right-block" data-label="Right Block"/>
-
-        <!-- 4. LEFT ELBOW (top-left of paint at FT line) -->
-        <rect class="zone-overlay" id="zone-left-elbow"
-          x="155" y="295" width="75" height="60"
-          data-zone="left-elbow" data-label="Left Elbow"/>
-
-        <!-- 5. RIGHT ELBOW -->
-        <rect class="zone-overlay" id="zone-right-elbow"
-          x="270" y="295" width="75" height="60"
-          data-zone="right-elbow" data-label="Right Elbow"/>
-
-        <!-- 6. FREE THROW LINE (center, above paint) -->
-        <rect class="zone-overlay" id="zone-ft"
-          x="195" y="285" width="110" height="70"
-          data-zone="ft-line" data-label="Free Throw Line"/>
-
-        <!-- 7. LEFT MID RANGE (outside lane left, inside 3pt arc) -->
-        <path class="zone-overlay" id="zone-left-mid"
-          d="M 10 510 L 155 510 L 155 320 L 10 320 Z"
-          data-zone="left-mid" data-label="Left Mid Range"/>
-
-        <!-- 8. RIGHT MID RANGE -->
-        <path class="zone-overlay" id="zone-right-mid"
-          d="M 490 510 L 345 510 L 345 320 L 490 320 Z"
-          data-zone="right-mid" data-label="Right Mid Range"/>
-
-        <!-- 9. LEFT CORNER 3 -->
-        <path class="zone-overlay" id="zone-left-corner"
-          d="M 10 510 L 10 248 L 40 248 L 40 510 Z"
-          data-zone="left-corner-3" data-label="Left Corner 3"/>
-
-        <!-- 10. RIGHT CORNER 3 -->
-        <path class="zone-overlay" id="zone-right-corner"
-          d="M 490 510 L 490 248 L 460 248 L 460 510 Z"
-          data-zone="right-corner-3" data-label="Right Corner 3"/>
-
-        <!-- 11. LEFT WING 3 (along arc, left side above mid) -->
-        <path class="zone-overlay" id="zone-left-wing"
-          d="M 10 248 L 10 120 A 210 210 0 0 1 250 248 L 155 320 L 10 320 Z"
-          data-zone="left-wing-3" data-label="Left Wing 3"/>
-
-        <!-- 12. RIGHT WING 3 -->
-        <path class="zone-overlay" id="zone-right-wing"
-          d="M 490 248 L 490 120 A 210 210 0 0 0 250 248 L 345 320 L 490 320 Z"
-          data-zone="right-wing-3" data-label="Right Wing 3"/>
-
-        <!-- 13. TOP OF KEY 3 (above FT circle, center) -->
-        <path class="zone-overlay" id="zone-top-3"
-          d="M 175 320 A 75 75 0 0 1 325 320 L 325 248 A 75 75 0 0 0 175 248 Z"
-          data-zone="top-key-3" data-label="Top of Key 3"/>
-
-        <!-- 14. ABOVE THE ARC (deep, above 3pt line) -->
-        <path class="zone-overlay" id="zone-above-arc"
-          d="M 10 10 L 490 10 L 490 120 A 210 210 0 0 0 10 120 Z"
-          data-zone="above-arc" data-label="Above the Arc"/>
-
-        <!-- Zone labels (visible when active) -->
-        <text x="250" y="375" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold" font-family="DM Sans" pointer-events="none" id="lbl-paint" opacity="0">Paint</text>
-        <text x="190" y="460" text-anchor="middle" fill="#fff" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-block" opacity="0">L Block</text>
-        <text x="310" y="460" text-anchor="middle" fill="#fff" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-block" opacity="0">R Block</text>
-        <text x="185" y="330" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-elbow" opacity="0">L Elbow</text>
-        <text x="315" y="330" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-elbow" opacity="0">R Elbow</text>
-        <text x="250" y="325" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-ft-line" opacity="0">FT Line</text>
-        <text x="82" y="420" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-mid" opacity="0">L Mid</text>
-        <text x="418" y="420" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-mid" opacity="0">R Mid</text>
-        <text x="25" y="380" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-left-corner-3" opacity="0">L Cor</text>
-        <text x="475" y="380" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-right-corner-3" opacity="0">R Cor</text>
-        <text x="75" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-wing-3" opacity="0">L Wing</text>
-        <text x="425" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-wing-3" opacity="0">R Wing</text>
-        <text x="250" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-top-key-3" opacity="0">Top Key</text>
-        <text x="250" y="70" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-above-arc" opacity="0">Above Arc</text>
       </svg>
+
+      <!-- Placement instruction overlay -->
+      <div id="place-hint" style="display:none;position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:var(--accent);padding:6px 14px;border-radius:4px;font-size:12px;pointer-events:none;white-space:nowrap;border:1px solid var(--accent);">
+        Click court to place Player <span id="place-hint-num"></span>
+      </div>
     </div>
 
-    <div class="court-legend">
-      <span><div class="legend-dot" style="background:var(--accent)"></div> Selected zone</span>
-      <span style="color:var(--muted);font-size:11px">Click zones to select scoring targets</span>
+    <!-- Zone selector legend -->
+    <div style="width:100%;max-width:480px;">
+      <div class="section-label" style="margin-bottom:8px;">Scoring Zones</div>
+      <div class="zone-list" id="zone-list"></div>
     </div>
 
     <!-- Summary -->
-    <div style="width:100%;max-width:500px;display:flex;flex-direction:column;gap:8px;">
-      <div class="section-label">Selected</div>
+    <div style="width:100%;max-width:480px;">
+      <div class="section-label" style="margin-bottom:6px;">Selected</div>
       <div class="summary-tags" id="summary-tags">
-        <span style="font-size:12px;color:var(--muted);font-style:italic">No concepts or zones selected</span>
+        <span style="font-size:12px;color:var(--muted);font-style:italic">Nothing selected yet</span>
       </div>
     </div>
   </div>
@@ -637,341 +613,608 @@
 </div>
 
 <script>
-const CONCEPTS = [
-  // Ball Screen Actions
-  "Pick & Roll", "Pick & Pop", "DHO", "Ghost Screen",
-  // Cutting Actions
-  "Cut to Basket", "Sprint to Screen",
-  // Off-Ball Screens
-  "Screen", "Elevator",
-  // Post Entries
-  "High Post", "Mid Post", "Low Post", "Short Corner"
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const CONCEPT_GROUPS = [
+  { label: "Ball Screen Actions", concepts: ["Pick & Roll", "Pick & Pop", "DHO", "Ghost Screen"] },
+  { label: "Cutting Actions",     concepts: ["Cut to Basket", "Sprint to Screen", "Sprint to Fill"] },
+  { label: "Off-Ball Screens",    concepts: ["Screen", "Elevator"] },
+  { label: "Post Entries",        concepts: ["High Post", "Mid Post", "Low Post", "Short Corner"] }
 ];
+const CONCEPTS = CONCEPT_GROUPS.flatMap(g => g.concepts);
 
 const ZONES = [
-  { id: "paint",         label: "Paint / Restricted Area" },
-  { id: "left-block",    label: "Left Block" },
-  { id: "right-block",   label: "Right Block" },
-  { id: "left-elbow",    label: "Left Elbow" },
-  { id: "right-elbow",   label: "Right Elbow" },
-  { id: "ft-line",       label: "Free Throw Line" },
-  { id: "left-mid",      label: "Left Mid Range" },
-  { id: "right-mid",     label: "Right Mid Range" },
-  { id: "left-corner-3", label: "Left Corner 3" },
-  { id: "right-corner-3",label: "Right Corner 3" },
-  { id: "left-wing-3",   label: "Left Wing 3" },
-  { id: "right-wing-3",  label: "Right Wing 3" },
-  { id: "top-key-3",     label: "Top of Key 3" },
-  { id: "above-arc",     label: "Above the Arc" },
+  { id: "paint",          label: "Paint" },
+  { id: "left-block",     label: "Left Block" },
+  { id: "right-block",    label: "Right Block" },
+  { id: "left-elbow",     label: "Left Elbow" },
+  { id: "right-elbow",    label: "Right Elbow" },
+  { id: "ft-line",        label: "Free Throw Line" },
+  { id: "left-mid",       label: "Left Mid Range" },
+  { id: "right-mid",      label: "Right Mid Range" },
+  { id: "left-corner-3",  label: "Left Corner 3" },
+  { id: "right-corner-3", label: "Right Corner 3" },
+  { id: "left-wing-3",    label: "Left Wing 3" },
+  { id: "right-wing-3",   label: "Right Wing 3" },
+  { id: "top-key-3",      label: "Top of Key 3" },
+  { id: "above-arc",      label: "Above the Arc" },
 ];
 
-let selectedConcepts = [];
-let selectedZones = [];
-let selectedPlayers = null;
-let savedDrills = [];
+// Named spots on the court: {label, x, y} in SVG coords (viewBox 500x520)
+const NAMED_SPOTS = [
+  { label: "Select spot...",   x: null, y: null },
+  { label: "Tip of Key",       x: 250,  y: 240 },
+  { label: "Top of Key",       x: 250,  y: 270 },
+  { label: "Left Wing",        x: 110,  y: 290 },
+  { label: "Right Wing",       x: 390,  y: 290 },
+  { label: "Left Corner",      x: 30,   y: 430 },
+  { label: "Right Corner",     x: 470,  y: 430 },
+  { label: "Left Block",       x: 175,  y: 440 },
+  { label: "Right Block",      x: 325,  y: 440 },
+  { label: "Left Elbow",       x: 175,  y: 330 },
+  { label: "Right Elbow",      x: 325,  y: 330 },
+  { label: "High Post",        x: 250,  y: 330 },
+  { label: "Mid Post",         x: 250,  y: 390 },
+  { label: "Low Post",         x: 250,  y: 440 },
+  { label: "Short Corner L",   x: 60,   y: 460 },
+  { label: "Short Corner R",   x: 440,  y: 460 },
+  { label: "Left Short Mid",   x: 100,  y: 380 },
+  { label: "Right Short Mid",  x: 400,  y: 380 },
+];
 
-// Build concept grid
+// Player colors
+const PLAYER_COLORS = ["#e8a020","#4a9eff","#4caf50","#e040fb","#ff5555"];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+let selectedConcepts = [];
+let selectedZones    = [];
+let selectedDefense  = "0";
+let savedDrills      = [];
+let playerCount      = 5;
+let placingPlayer    = null; // index of player being placed via click
+
+// Player state: array of {x, y, action, spot}
+let players = [];
+
+function initPlayers(count) {
+  // Default starting positions
+  const defaults = [
+    { x: 250, y: 270, spot: "Top of Key" },
+    { x: 110, y: 290, spot: "Left Wing" },
+    { x: 390, y: 290, spot: "Right Wing" },
+    { x: 30,  y: 430, spot: "Left Corner" },
+    { x: 470, y: 430, spot: "Right Corner" },
+  ];
+  players = [];
+  for (let i = 0; i < count; i++) {
+    players.push({
+      x: defaults[i].x,
+      y: defaults[i].y,
+      spot: defaults[i].spot,
+      action: ""
+    });
+  }
+}
+
+// ─── BUILD CONCEPT GRID ──────────────────────────────────────────────────────
+
 const grid = document.getElementById('concept-grid');
-CONCEPTS.forEach(c => {
-  const tag = document.createElement('div');
-  tag.className = 'concept-tag';
-  tag.textContent = c;
-  tag.addEventListener('click', () => toggleConcept(c, tag));
-  grid.appendChild(tag);
+CONCEPT_GROUPS.forEach(group => {
+  const groupEl = document.createElement('div');
+  groupEl.className = 'concept-group';
+  const lbl = document.createElement('div');
+  lbl.className = 'concept-group-label';
+  lbl.textContent = group.label;
+  groupEl.appendChild(lbl);
+  const tags = document.createElement('div');
+  tags.className = 'concept-group-tags';
+  group.concepts.forEach(c => {
+    const tag = document.createElement('div');
+    tag.className = 'concept-tag';
+    tag.textContent = c;
+    tag.dataset.concept = c;
+    tag.addEventListener('click', () => {
+      if (selectedConcepts.includes(c)) {
+        selectedConcepts = selectedConcepts.filter(x => x !== c);
+        tag.classList.remove('active');
+      } else {
+        selectedConcepts.push(c);
+        tag.classList.add('active');
+      }
+      updateSummary();
+    });
+    tags.appendChild(tag);
+  });
+  groupEl.appendChild(tags);
+  grid.appendChild(groupEl);
 });
 
-// Build zone checklist (right panel but here we add it to left)
-// Actually zone checklist goes in the right panel — let's inject it into left panel below concepts
-const leftPanel = document.querySelector('.panel');
-const zoneSection = document.createElement('div');
-zoneSection.innerHTML = `<div class="divider"></div><div class="section-label" style="margin-bottom:8px">Scoring Zones (checklist)</div><div class="zone-list" id="zone-list"></div>`;
-leftPanel.insertBefore(zoneSection, document.getElementById('build-btn').parentNode ? document.getElementById('build-btn') : leftPanel.lastChild);
-// Re-insert before build button
-leftPanel.insertBefore(zoneSection, document.getElementById('build-btn'));
+// ─── BUILD ZONE CHECKLIST ────────────────────────────────────────────────────
 
 const zoneListEl = document.getElementById('zone-list');
 ZONES.forEach(z => {
   const row = document.createElement('label');
   row.className = 'zone-check';
   row.id = 'chk-row-' + z.id;
-  row.innerHTML = `<input type="checkbox" id="chk-${z.id}" data-zone="${z.id}"> <div class="zone-dot" id="dot-${z.id}"></div> <span>${z.label}</span>`;
-  row.querySelector('input').addEventListener('change', (e) => toggleZoneById(z.id, e.target.checked));
+  row.innerHTML = `<input type="checkbox" id="chk-${z.id}" data-zone="${z.id}">
+    <div class="zone-dot" id="dot-${z.id}"></div>
+    <span>${z.label}</span>`;
+  row.querySelector('input').addEventListener('change', e => {
+    toggleZone(z.id, e.target.checked);
+  });
   zoneListEl.appendChild(row);
 });
 
-// Player toggle
-document.querySelectorAll('.player-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedPlayers = btn.dataset.val;
-    updateSummary();
-  });
-});
+// ─── ZONE TOGGLE ─────────────────────────────────────────────────────────────
 
-// Court zone click
-document.querySelectorAll('.zone-overlay').forEach(el => {
-  el.addEventListener('click', () => {
-    const zid = el.dataset.zone;
-    const isActive = el.classList.contains('active');
-    if (isActive) {
-      el.classList.remove('active');
-      selectedZones = selectedZones.filter(z => z !== zid);
-      // sync label
-      const lbl = document.getElementById('lbl-' + zid);
-      if (lbl) lbl.setAttribute('opacity', '0');
-    } else {
-      el.classList.add('active');
-      if (!selectedZones.includes(zid)) selectedZones.push(zid);
-      const lbl = document.getElementById('lbl-' + zid);
-      if (lbl) lbl.setAttribute('opacity', '1');
-    }
-    syncCheckboxFromZone(zid, !isActive);
-    updateSummary();
-  });
-});
-
-function toggleZoneById(zid, checked) {
+function toggleZone(zid, checked) {
   const overlay = document.getElementById('zone-' + zid);
-  const lbl = document.getElementById('lbl-' + zid);
+  const lbl     = document.getElementById('lbl-' + zid);
+  const dot     = document.getElementById('dot-' + zid);
+  const row     = document.getElementById('chk-row-' + zid);
+  const chk     = document.getElementById('chk-' + zid);
   if (checked) {
     selectedZones = [...new Set([...selectedZones, zid])];
     if (overlay) overlay.classList.add('active');
     if (lbl) lbl.setAttribute('opacity', '1');
+    if (dot) dot.style.background = 'var(--accent2)';
+    if (row) row.classList.add('active');
+    if (chk) chk.checked = true;
   } else {
     selectedZones = selectedZones.filter(z => z !== zid);
     if (overlay) overlay.classList.remove('active');
     if (lbl) lbl.setAttribute('opacity', '0');
-  }
-  const dotEl = document.getElementById('dot-' + zid);
-  const rowEl = document.getElementById('chk-row-' + zid);
-  if (dotEl) dotEl.style.background = checked ? 'var(--accent)' : 'var(--muted)';
-  if (rowEl) rowEl.classList.toggle('active', checked);
-  updateSummary();
-}
-
-function syncCheckboxFromZone(zid, checked) {
-  const chk = document.getElementById('chk-' + zid);
-  if (chk) chk.checked = checked;
-  const dotEl = document.getElementById('dot-' + zid);
-  const rowEl = document.getElementById('chk-row-' + zid);
-  if (dotEl) dotEl.style.background = checked ? 'var(--accent)' : 'var(--muted)';
-  if (rowEl) rowEl.classList.toggle('active', checked);
-}
-
-function toggleConcept(c, el) {
-  if (selectedConcepts.includes(c)) {
-    selectedConcepts = selectedConcepts.filter(x => x !== c);
-    el.classList.remove('active');
-  } else {
-    selectedConcepts.push(c);
-    el.classList.add('active');
+    if (dot) dot.style.background = 'var(--muted)';
+    if (row) row.classList.remove('active');
+    if (chk) chk.checked = false;
   }
   updateSummary();
 }
+
+// Court zone click
+document.querySelectorAll('.zone-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    // If placing a player, don't toggle zone
+    if (placingPlayer !== null) return;
+    const zid = el.dataset.zone;
+    toggleZone(zid, !selectedZones.includes(zid));
+  });
+});
+
+// ─── PLAYER COUNT ────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.pcount-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pcount-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    playerCount = parseInt(btn.dataset.count);
+    initPlayers(playerCount);
+    renderPlayerRows();
+    renderPlayerMarkers();
+    updateSummary();
+  });
+});
+
+// ─── PLAYER ROWS ─────────────────────────────────────────────────────────────
+
+function renderPlayerRows() {
+  const container = document.getElementById('player-rows');
+  container.innerHTML = '';
+  players.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.id = 'prow-' + i;
+
+    // Spot selector
+    const spotOpts = NAMED_SPOTS.map(s =>
+      `<option value="${s.label}" ${s.label === p.spot ? 'selected' : ''}>${s.label}</option>`
+    ).join('');
+
+    // Action selector
+    const actionOpts = `<option value="">-- No action --</option>` +
+      CONCEPT_GROUPS.map(g =>
+        `<optgroup label="${g.label}">` +
+        g.concepts.map(c => `<option value="${c}" ${c === p.action ? 'selected' : ''}>${c}</option>`).join('') +
+        `</optgroup>`
+      ).join('');
+
+    row.innerHTML = `
+      <div class="player-row-header">
+        <div class="player-badge" style="background:${PLAYER_COLORS[i]}">P${i+1}</div>
+        <button class="btn-secondary" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;border:1px solid #444;background:transparent;color:var(--muted);" id="place-btn-${i}">
+          Place on court
+        </button>
+      </div>
+      <div>
+        <div class="player-row-label">Starting Spot</div>
+        <select id="pspot-${i}">${spotOpts}</select>
+      </div>
+      <div>
+        <div class="player-row-label">Action</div>
+        <select id="paction-${i}">${actionOpts}</select>
+      </div>
+    `;
+
+    // Spot select change
+    row.querySelector(`#pspot-${i}`).addEventListener('change', e => {
+      const spot = NAMED_SPOTS.find(s => s.label === e.target.value);
+      if (spot && spot.x !== null) {
+        players[i].x = spot.x;
+        players[i].y = spot.y;
+        players[i].spot = spot.label;
+      } else {
+        players[i].spot = e.target.value;
+      }
+      renderPlayerMarkers();
+      updateSummary();
+    });
+
+    // Action select change
+    row.querySelector(`#paction-${i}`).addEventListener('change', e => {
+      players[i].action = e.target.value;
+      updateSummary();
+    });
+
+    // Place button
+    row.querySelector(`#place-btn-${i}`).addEventListener('click', () => {
+      startPlacing(i);
+    });
+
+    container.appendChild(row);
+  });
+}
+
+// ─── PLAYER MARKERS ON COURT ─────────────────────────────────────────────────
+
+function renderPlayerMarkers() {
+  const layer = document.getElementById('player-markers-layer');
+  layer.innerHTML = '';
+
+  players.forEach((p, i) => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'player-marker');
+    g.setAttribute('id', 'pmarker-' + i);
+
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', p.x);
+    circle.setAttribute('cy', p.y);
+    circle.setAttribute('r', '16');
+    circle.setAttribute('fill', PLAYER_COLORS[i]);
+    circle.setAttribute('stroke', '#fff');
+    circle.setAttribute('stroke-width', '2');
+    circle.setAttribute('opacity', '0.92');
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', p.x);
+    text.setAttribute('y', p.y + 5);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('fill', '#111');
+    text.setAttribute('font-size', '13');
+    text.setAttribute('font-weight', '700');
+    text.setAttribute('font-family', 'DM Sans, sans-serif');
+    text.setAttribute('pointer-events', 'none');
+    text.textContent = i + 1;
+
+    g.appendChild(circle);
+    g.appendChild(text);
+
+    // Drag behavior
+    let dragging = false;
+    let dragOffX = 0, dragOffY = 0;
+
+    g.addEventListener('mousedown', e => {
+      if (placingPlayer !== null) return;
+      dragging = true;
+      const svgPt = svgPoint(e);
+      dragOffX = svgPt.x - p.x;
+      dragOffY = svgPt.y - p.y;
+      e.preventDefault();
+    });
+
+    layer.appendChild(g);
+  });
+
+  // Global mouse move/up for drag
+  const svg = document.getElementById('court-svg');
+
+  svg.onmousemove = e => {
+    players.forEach((p, i) => {
+      const g = document.getElementById('pmarker-' + i);
+      if (g && g._dragging) {
+        const pt = svgPoint(e);
+        p.x = Math.max(20, Math.min(480, pt.x - g._offX));
+        p.y = Math.max(20, Math.min(500, pt.y - g._offY));
+        // Update marker position
+        g.querySelector('circle').setAttribute('cx', p.x);
+        g.querySelector('circle').setAttribute('cy', p.y);
+        g.querySelector('text').setAttribute('x', p.x);
+        g.querySelector('text').setAttribute('y', p.y + 5);
+        // Update spot to "Custom"
+        players[i].spot = 'Custom';
+        const spotSel = document.getElementById('pspot-' + i);
+        if (spotSel) spotSel.value = 'Select spot...';
+      }
+    });
+  };
+
+  svg.onmouseup = () => {
+    players.forEach((p, i) => {
+      const g = document.getElementById('pmarker-' + i);
+      if (g) g._dragging = false;
+    });
+    updateSummary();
+  };
+
+  // Attach drag state to each marker
+  players.forEach((p, i) => {
+    const g = document.getElementById('pmarker-' + i);
+    if (!g) return;
+    g._dragging = false;
+    g._offX = 0;
+    g._offY = 0;
+    g.addEventListener('mousedown', e => {
+      if (placingPlayer !== null) return;
+      g._dragging = true;
+      const pt = svgPoint(e);
+      g._offX = pt.x - p.x;
+      g._offY = pt.y - p.y;
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  });
+}
+
+// ─── PLACE ON COURT ──────────────────────────────────────────────────────────
+
+function startPlacing(i) {
+  placingPlayer = i;
+  const hint = document.getElementById('place-hint');
+  document.getElementById('place-hint-num').textContent = i + 1;
+  hint.style.display = 'block';
+  document.getElementById('court-svg').style.cursor = 'crosshair';
+}
+
+function stopPlacing() {
+  placingPlayer = null;
+  document.getElementById('place-hint').style.display = 'none';
+  document.getElementById('court-svg').style.cursor = 'default';
+}
+
+document.getElementById('court-svg').addEventListener('click', e => {
+  if (placingPlayer === null) return;
+  const pt = svgPoint(e);
+  const i = placingPlayer;
+  players[i].x = Math.max(20, Math.min(480, pt.x));
+  players[i].y = Math.max(20, Math.min(500, pt.y));
+  players[i].spot = 'Custom';
+  const spotSel = document.getElementById('pspot-' + i);
+  if (spotSel) spotSel.value = 'Select spot...';
+  renderPlayerMarkers();
+  updateSummary();
+  stopPlacing();
+});
+
+// Cancel placing on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') stopPlacing();
+});
+
+// ─── SVG COORDINATE HELPER ───────────────────────────────────────────────────
+
+function svgPoint(e) {
+  const svg = document.getElementById('court-svg');
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX;
+  pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+// ─── DEFENSE TOGGLE ──────────────────────────────────────────────────────────
+
+document.querySelectorAll('.def-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.def-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedDefense = btn.dataset.val;
+    updateSummary();
+  });
+});
+
+// ─── SUMMARY ─────────────────────────────────────────────────────────────────
 
 function updateSummary() {
   const container = document.getElementById('summary-tags');
   container.innerHTML = '';
-  if (!selectedConcepts.length && !selectedZones.length && !selectedPlayers) {
-    container.innerHTML = '<span style="font-size:12px;color:var(--muted);font-style:italic">No concepts or zones selected</span>';
-    return;
-  }
-  if (selectedPlayers) {
-    const t = document.createElement('span');
-    t.className = 'summary-tag';
-    t.textContent = selectedPlayers;
-    container.appendChild(t);
-  }
+  let any = false;
+
   selectedConcepts.forEach(c => {
     const t = document.createElement('span');
     t.className = 'summary-tag concept';
     t.textContent = c;
     container.appendChild(t);
+    any = true;
   });
+
   selectedZones.forEach(z => {
     const zObj = ZONES.find(x => x.id === z);
     const t = document.createElement('span');
     t.className = 'summary-tag zone';
     t.textContent = zObj ? zObj.label : z;
     container.appendChild(t);
+    any = true;
   });
+
+  players.forEach((p, i) => {
+    const t = document.createElement('span');
+    t.className = 'summary-tag player';
+    t.style.borderColor = PLAYER_COLORS[i];
+    t.style.color = PLAYER_COLORS[i];
+    t.textContent = `P${i+1}: ${p.spot || '?'}${p.action ? ' / ' + p.action : ''}`;
+    container.appendChild(t);
+    any = true;
+  });
+
+  if (!any) {
+    container.innerHTML = '<span style="font-size:12px;color:var(--muted);font-style:italic">Nothing selected yet</span>';
+  }
 }
 
-// Build drill logic
+// ─── BUILD DRILL ─────────────────────────────────────────────────────────────
+
 document.getElementById('build-btn').addEventListener('click', buildDrill);
 
 function buildDrill() {
-  if (!selectedConcepts.length && !selectedZones.length) {
-    setOutput('Select at least one concept or zone to build a drill.', true);
-    return;
-  }
-
-  const players = selectedPlayers || '5v5';
-  const reps = document.getElementById('reps').value;
+  const reps       = document.getElementById('reps').value;
   const constraint = document.getElementById('constraint').value.trim();
-  const concepts = selectedConcepts.length ? selectedConcepts : ['General Offense'];
-  const zones = selectedZones.map(z => ZONES.find(x => x.id === z)?.label || z);
+  const zoneLabels = selectedZones.map(z => ZONES.find(x => x.id === z)?.label || z);
+  const zoneStr    = zoneLabels.length ? zoneLabels.join(', ') : 'open floor';
+  const isLive     = selectedDefense !== '0';
+  const defStr     = selectedDefense === '0' ? 'No defense' : selectedDefense === 'live' ? 'Live defense' : selectedDefense === 'shell' ? 'Shell defense' : 'Token defense';
 
-  const drillData = generateDrill(concepts, zones, players, reps, constraint);
-
-  document.getElementById('out-name').textContent = drillData.name;
-  document.getElementById('out-name').classList.remove('empty');
-  document.getElementById('out-setup').textContent = drillData.setup;
-  document.getElementById('out-setup').classList.remove('empty');
-  document.getElementById('out-execution').textContent = drillData.execution;
-  document.getElementById('out-execution').classList.remove('empty');
-  document.getElementById('out-coaching').textContent = drillData.coaching;
-  document.getElementById('out-coaching').classList.remove('empty');
-  document.getElementById('out-scoring').textContent = drillData.scoring;
-  document.getElementById('out-scoring').classList.remove('empty');
-}
-
-function generateDrill(concepts, zones, players, reps, constraint) {
-  const conceptStr = concepts.join(' + ');
-  const zoneStr = zones.length ? zones.join(', ') : 'open floor';
-  const isLive = players.includes('v') && !players.includes('v0');
-  const offense = players.split('v')[0];
-  const defense = players.split('v')[1];
-
-  // Drill name
-  const name = `${conceptStr} — ${zoneStr} (${players})`;
+  // Drill name from concepts + player count
+  const conceptStr = selectedConcepts.length ? selectedConcepts.join(' + ') : 'Open';
+  const name = `${conceptStr} — ${playerCount}v${selectedDefense === '0' ? '0' : playerCount} (${zoneStr})`;
 
   // Setup
-  let setup = `Players: ${players}\n`;
+  let setup = `Players: ${playerCount}v${selectedDefense === '0' ? '0' : playerCount} | Defense: ${defStr}\n`;
   setup += `Scoring targets: ${zoneStr}\n`;
-  setup += `Reps / Duration: ${reps}\n`;
-  if (isLive) {
-    setup += `Defense starts in help-side position. Offense starts with the ball at top of key or ball screen entry point.`;
-  } else {
-    setup += `Walk through at half speed first. Then full speed.`;
-  }
+  setup += `Reps / Duration: ${reps}\n\n`;
+  setup += `Starting positions:\n`;
+  players.forEach((p, i) => {
+    setup += `  P${i+1} — ${p.spot || 'Custom'}${p.action ? ' | Action: ' + p.action : ''}\n`;
+  });
 
-  // Execution — concept-specific
+  // Execution
   let execution = '';
+  const allActions = [...new Set(players.map(p => p.action).filter(Boolean))];
+  const allConcepts = [...new Set([...selectedConcepts, ...allActions])];
 
-  if (concepts.includes('Pick & Roll')) {
+  if (allConcepts.includes('Pick & Roll')) {
     execution += `Ball handler uses a ball screen. Big sets hard, shoulder-to-hip contact.\n`;
-    execution += `Ball handler reads the coverage — turn the corner on a hedge, reject on ice.\n`;
-    execution += `Big rolls to the ${zoneStr}. Ball handler attacks downhill or hits the roller.\n`;
+    execution += `Ball handler reads the coverage — turn corner on hedge, reject on ice.\n`;
+    execution += `Big rolls to ${zoneStr}. Ball handler attacks downhill or hits the roller.\n`;
   }
-  if (concepts.includes('Pick & Pop')) {
-    execution += `Ball handler uses a ball screen. Big sets and pops out to ${zoneStr}.\n`;
-    execution += `Ball handler reads the coverage and either turns the corner or kicks to the pop.\n`;
+  if (allConcepts.includes('Pick & Pop')) {
+    execution += `Ball handler uses a ball screen. Big sets and pops to ${zoneStr}.\n`;
+    execution += `Ball handler reads coverage — turn the corner or kick to the pop.\n`;
     execution += `Big catches ready to shoot — feet set before the ball arrives.\n`;
   }
-  if (concepts.includes('DHO')) {
-    execution += `Handler dribbles at a teammate and hands off off the hip.\n`;
-    execution += `Receiver reads the defense — curl to the rim, flat cut for mid, or reject for 3.\n`;
-    execution += `Handler follows the DHO as a screener or lifts away to maintain spacing.\n`;
-    execution += `Attack scoring targets: ${zoneStr}.\n`;
+  if (allConcepts.includes('DHO')) {
+    execution += `Handler dribbles at a teammate and hands off at the hip.\n`;
+    execution += `Receiver reads the defense — curl to rim, flat cut for mid, reject for 3.\n`;
+    execution += `Handler follows the DHO as screener or lifts to maintain spacing.\n`;
   }
-  if (concepts.includes('Ghost Screen')) {
-    execution += `Ball handler drives off a ghost screen — screener sets and slips before contact.\n`;
-    execution += `Defense must honor the threat of the screen. Ball handler attacks the gap.\n`;
-    execution += `Screener reads the defense and either rolls or pops to ${zoneStr}.\n`;
+  if (allConcepts.includes('Ghost Screen')) {
+    execution += `Ball handler drives off a ghost screen — screener slips before contact.\n`;
+    execution += `Defense must honor the screen threat. Ball handler attacks the gap.\n`;
+    execution += `Screener reads and rolls or pops to ${zoneStr}.\n`;
   }
-  if (concepts.includes('Cut to Basket')) {
-    execution += `Off-ball player reads their defender and makes a hard cut to the basket.\n`;
+  if (allConcepts.includes('Cut to Basket')) {
+    execution += `Off-ball player reads defender and cuts hard to the basket.\n`;
     execution += `Passer delivers a lead pass on time and on target.\n`;
     execution += `Cutter finishes at ${zoneStr}. No drift — attack the rim.\n`;
   }
-  if (concepts.includes('Sprint to Screen')) {
+  if (allConcepts.includes('Sprint to Screen')) {
     execution += `Off-ball player sprints to set a screen for a teammate.\n`;
-    execution += `Set a legal screen — stationary, feet set, no moving into the defender.\n`;
-    execution += `Screener reads the defense after the screen and reacts accordingly.\n`;
+    execution += `Set a legal screen — stationary, feet set, no moving into defender.\n`;
+    execution += `Read the defense and react after the screen.\n`;
   }
-  if (concepts.includes('Screen')) {
-    execution += `Screener sets a stationary off-ball screen for a cutter or shooter.\n`;
-    execution += `Cutter reads the defender — curl, fade, or flat cut based on how the defense plays it.\n`;
+  if (allConcepts.includes('Sprint to Fill')) {
+    execution += `After a drive, cut, or screen — off-ball player sprints to fill the open spot.\n`;
+    execution += `No standing. No drifting. Fill at full speed to maintain floor balance.\n`;
+    execution += `Arrive at ${zoneStr} ready to catch and make the next read.\n`;
+  }
+  if (allConcepts.includes('Screen')) {
+    execution += `Off-ball screener sets a stationary screen for a cutter or shooter.\n`;
+    execution += `Cutter reads defender — curl, fade, or flat cut based on coverage.\n`;
     execution += `Catch and attack ${zoneStr}.\n`;
   }
-  if (concepts.includes('Elevator')) {
+  if (allConcepts.includes('Elevator')) {
     execution += `Two players set up as elevator doors on each side of the lane.\n`;
     execution += `Shooter times the cut through the gap as the doors close.\n`;
-    execution += `Passer hits the shooter in rhythm. Shooter catches ready to fire at ${zoneStr}.\n`;
+    execution += `Passer hits the shooter in rhythm — catch and fire at ${zoneStr}.\n`;
   }
-  if (concepts.includes('High Post')) {
-    execution += `Entry pass to the high post (elbow or free throw line extended).\n`;
-    execution += `High post reads the defense — face up, drive baseline or middle, or hit a cutter.\n`;
+  if (allConcepts.includes('High Post')) {
+    execution += `Entry pass to the high post (elbow or FT line extended).\n`;
+    execution += `High post reads — face up, drive baseline or middle, or hit a cutter.\n`;
     execution += `Perimeter players cut or relocate on the entry.\n`;
   }
-  if (concepts.includes('Mid Post')) {
-    execution += `Entry pass to the mid post (mid-lane, between block and elbow).\n`;
-    execution += `Post player seals their defender and catches with a target hand.\n`;
-    execution += `Attack the baseline or middle depending on defender's position.\n`;
+  if (allConcepts.includes('Mid Post')) {
+    execution += `Entry pass to the mid post (between block and elbow).\n`;
+    execution += `Post seals defender and catches with a target hand.\n`;
+    execution += `Attack baseline or middle depending on defender's position.\n`;
   }
-  if (concepts.includes('Low Post')) {
-    execution += `Entry pass to the low block. Post player establishes position and calls for the ball.\n`;
-    execution += `Post reads the defense — drop step baseline, drop step middle, or up-and-under.\n`;
-    execution += `Perimeter players hold spacing and prepare for a kick-out if defense collapses.\n`;
+  if (allConcepts.includes('Low Post')) {
+    execution += `Entry pass to the low block. Post establishes position and calls for the ball.\n`;
+    execution += `Post reads — drop step baseline, drop step middle, or up-and-under.\n`;
+    execution += `Perimeter players hold spacing and prepare for a kick-out if help collapses.\n`;
   }
-  if (concepts.includes('Short Corner')) {
-    execution += `Ball is entered to the short corner (baseline extended, outside the lane).\n`;
-    execution += `Short corner player reads the defense — attack the mid-range, feed the post, or kick back out.\n`;
-    execution += `Requires crisp spacing — perimeter players cannot crowd the short corner.\n`;
+  if (allConcepts.includes('Short Corner')) {
+    execution += `Ball entered to the short corner (baseline extended, outside the lane).\n`;
+    execution += `Short corner reads — attack mid-range, feed the post, or kick back out.\n`;
+    execution += `Perimeter players cannot crowd the short corner — spacing is essential.\n`;
   }
   if (!execution) {
-    execution += `Offense executes ${conceptStr} with the goal of generating a scoring opportunity at ${zoneStr}.\n`;
+    execution = `Offense executes the drill with the goal of creating quality looks at ${zoneStr}.\n`;
     execution += `Players rotate through positions after each possession.\n`;
   }
-
-  execution += `\nRotation: ${reps}. ${isLive ? 'Offense and defense swap after each round.' : 'Walk through once, then full speed.'}`;
+  execution += `\nRotation: ${reps}. ${isLive ? 'Offense and defense swap after each round.' : 'Walk through once at half speed, then full speed.'}`;
 
   // Coaching points
-  let coaching = '';
-  coaching += `• Read the defense before the action — anticipate, do not react.\n`;
-  if (concepts.includes('Pick & Roll') || concepts.includes('Pick & Pop')) {
-    coaching += `• Ball handler: stay low off the screen, shoulder-to-shoulder contact.\n`;
-    coaching += `• Big: set hard, hold until contact is made before rolling or popping.\n`;
+  let coaching = `Read the defense before the action — anticipate, do not react.\n`;
+  if (allConcepts.some(c => ['Pick & Roll','Pick & Pop','Ghost Screen'].includes(c))) {
+    coaching += `Ball handler: stay low off the screen, shoulder-to-shoulder contact.\n`;
+    coaching += `Screener: set hard, hold until contact is made before rolling or popping.\n`;
   }
-  if (concepts.includes('Ghost Screen')) {
-    coaching += `• Timing is the whole play — screener slips at the right moment, not early.\n`;
-    coaching += `• Ball handler must sell the drive off the screen to freeze the defense.\n`;
+  if (allConcepts.some(c => ['DHO'].includes(c))) {
+    coaching += `Handler: attack the defender before the hand-off, do not drift.\n`;
+    coaching += `Receiver: come off the hip tight, read the defense on the catch.\n`;
   }
-  if (concepts.includes('DHO')) {
-    coaching += `• Handler: attack the defender before the hand-off, do not drift.\n`;
-    coaching += `• Receiver: come off the hip tight, read the defense on the catch.\n`;
+  if (allConcepts.some(c => ['Cut to Basket','Sprint to Screen','Sprint to Fill'].includes(c))) {
+    coaching += `Cuts and sprints must be sharp and purposeful — no jogging.\n`;
+    coaching += `Passer: see the cutter before they cut. Deliver early.\n`;
   }
-  if (concepts.includes('Cut to Basket') || concepts.includes('Sprint to Screen')) {
-    coaching += `• Cuts must be sharp and purposeful — no jogging.\n`;
-    coaching += `• Passer: see the cutter before they cut. Deliver early.\n`;
+  if (allConcepts.some(c => ['High Post','Mid Post','Low Post','Short Corner'].includes(c))) {
+    coaching += `Post: establish position before calling for the ball.\n`;
+    coaching += `Perimeter: hold spacing on the entry. Do not collapse the floor.\n`;
+    coaching += `Read the help defender — attack away from where help is coming.\n`;
   }
-  if (concepts.includes('High Post') || concepts.includes('Mid Post') || concepts.includes('Low Post') || concepts.includes('Short Corner')) {
-    coaching += `• Post players: establish position before calling for the ball.\n`;
-    coaching += `• Perimeter: hold spacing on the entry. Do not collapse the floor.\n`;
-    coaching += `• Read the help defender — attack opposite of where help is coming from.\n`;
-  }
-  coaching += `• Attack the target zones — do not settle for contested looks outside the plan.`;
+  coaching += `Attack the target zones — do not settle for contested looks outside the plan.`;
+
   // Scoring
   let scoring = `Reps: ${reps}\n`;
   if (constraint) scoring += `Constraint: ${constraint}\n`;
   if (isLive) {
-    scoring += `Live scoring. Defense wins if they force a shot outside the target zones or a turnover.\n`;
+    scoring += `Live scoring. Defense wins on a forced shot outside the target zone or a turnover.\n`;
     scoring += `Track: makes at target zone vs. forced misses. Goal — 60%+ at designed spots.`;
   } else {
-    scoring += `Make tracking: count makes at each target zone. Set a goal (e.g., 7/10 at each zone before rotating).`;
+    scoring += `Make tracking: count makes at each target zone.\n`;
+    scoring += `Set a team goal (e.g. 7/10 at each zone) before rotating.`;
   }
 
-  return { name, setup, execution, coaching, scoring };
+  // Render
+  document.getElementById('out-name').textContent = name;
+  document.getElementById('out-name').classList.remove('empty');
+  document.getElementById('out-setup').textContent = setup;
+  document.getElementById('out-setup').classList.remove('empty');
+  document.getElementById('out-execution').textContent = execution;
+  document.getElementById('out-execution').classList.remove('empty');
+  document.getElementById('out-coaching').textContent = coaching;
+  document.getElementById('out-coaching').classList.remove('empty');
+  document.getElementById('out-scoring').textContent = scoring;
+  document.getElementById('out-scoring').classList.remove('empty');
 }
 
-function setOutput(msg, empty = false) {
-  ['out-name','out-setup','out-execution','out-coaching','out-scoring'].forEach(id => {
-    const el = document.getElementById(id);
-    el.textContent = msg;
-    el.classList.toggle('empty', empty);
-  });
-}
+// ─── COPY ────────────────────────────────────────────────────────────────────
 
-// Copy
 document.getElementById('copy-btn').addEventListener('click', () => {
-  const name = document.getElementById('out-name').textContent;
-  const setup = document.getElementById('out-setup').textContent;
-  const exec = document.getElementById('out-execution').textContent;
-  const coach = document.getElementById('out-coaching').textContent;
-  const score = document.getElementById('out-scoring').textContent;
+  const name    = document.getElementById('out-name').textContent;
   if (name === 'Build a drill to see output') return;
+  const setup   = document.getElementById('out-setup').textContent;
+  const exec    = document.getElementById('out-execution').textContent;
+  const coach   = document.getElementById('out-coaching').textContent;
+  const score   = document.getElementById('out-scoring').textContent;
   const text = `AWS OFFENSE BUILDER\n${'='.repeat(40)}\n\nDRILL: ${name}\n\nSETUP\n${setup}\n\nEXECUTION\n${exec}\n\nCOACHING POINTS\n${coach}\n\nSCORING / CONSTRAINT\n${score}`;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copy-btn');
@@ -981,17 +1224,18 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   });
 });
 
-// Save
+// ─── SAVE ────────────────────────────────────────────────────────────────────
+
 document.getElementById('save-btn').addEventListener('click', () => {
   const name = document.getElementById('out-name').textContent;
   if (!name || name === 'Build a drill to see output') return;
   if (savedDrills.find(d => d.name === name)) return;
   savedDrills.push({
     name,
-    setup: document.getElementById('out-setup').textContent,
+    setup:     document.getElementById('out-setup').textContent,
     execution: document.getElementById('out-execution').textContent,
-    coaching: document.getElementById('out-coaching').textContent,
-    scoring: document.getElementById('out-scoring').textContent,
+    coaching:  document.getElementById('out-coaching').textContent,
+    scoring:   document.getElementById('out-scoring').textContent,
   });
   renderSaved();
 });
@@ -1005,50 +1249,66 @@ function renderSaved() {
   list.innerHTML = '';
   savedDrills.forEach((d, i) => {
     const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:6px;';
-    row.innerHTML = `<button class="btn-secondary" style="flex:1;text-align:left;padding:5px 8px;font-size:11px;border:1px solid #333;border-radius:4px;background:#1a1a1a;color:#ccc;cursor:pointer;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${d.name}</button><button class="btn-secondary" style="padding:4px 7px;font-size:10px;border:1px solid #333;border-radius:4px;background:transparent;color:#888;cursor:pointer;" data-idx="${i}">✕</button>`;
-    row.querySelector('button:first-child').addEventListener('click', () => loadDrill(d));
-    row.querySelector('button:last-child').addEventListener('click', () => { savedDrills.splice(i,1); renderSaved(); });
+    row.className = 'saved-item';
+    row.innerHTML = `<span class="saved-item-name">${d.name}</span><span class="saved-item-del" data-i="${i}">×</span>`;
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('saved-item-del')) {
+        savedDrills.splice(parseInt(e.target.dataset.i), 1);
+        renderSaved();
+        return;
+      }
+      document.getElementById('out-name').textContent = d.name;
+      document.getElementById('out-name').classList.remove('empty');
+      document.getElementById('out-setup').textContent = d.setup;
+      document.getElementById('out-setup').classList.remove('empty');
+      document.getElementById('out-execution').textContent = d.execution;
+      document.getElementById('out-execution').classList.remove('empty');
+      document.getElementById('out-coaching').textContent = d.coaching;
+      document.getElementById('out-coaching').classList.remove('empty');
+      document.getElementById('out-scoring').textContent = d.scoring;
+      document.getElementById('out-scoring').classList.remove('empty');
+    });
     list.appendChild(row);
   });
 }
 
-function loadDrill(d) {
-  document.getElementById('out-name').textContent = d.name;
-  document.getElementById('out-name').classList.remove('empty');
-  document.getElementById('out-setup').textContent = d.setup;
-  document.getElementById('out-setup').classList.remove('empty');
-  document.getElementById('out-execution').textContent = d.execution;
-  document.getElementById('out-execution').classList.remove('empty');
-  document.getElementById('out-coaching').textContent = d.coaching;
-  document.getElementById('out-coaching').classList.remove('empty');
-  document.getElementById('out-scoring').textContent = d.scoring;
-  document.getElementById('out-scoring').classList.remove('empty');
-}
+// ─── CLEAR ───────────────────────────────────────────────────────────────────
 
-// Clear
 document.getElementById('clear-btn').addEventListener('click', () => {
   selectedConcepts = [];
   selectedZones = [];
-  selectedPlayers = null;
   document.querySelectorAll('.concept-tag').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.player-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.zone-overlay').forEach(el => {
     el.classList.remove('active');
     const lbl = document.getElementById('lbl-' + el.dataset.zone);
     if (lbl) lbl.setAttribute('opacity', '0');
   });
-  document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-  document.querySelectorAll('.zone-dot').forEach(d => d.style.background = 'var(--muted)');
-  document.querySelectorAll('.zone-check').forEach(r => r.classList.remove('active'));
+  ZONES.forEach(z => {
+    const dot = document.getElementById('dot-' + z.id);
+    const row = document.getElementById('chk-row-' + z.id);
+    const chk = document.getElementById('chk-' + z.id);
+    if (dot) dot.style.background = 'var(--muted)';
+    if (row) row.classList.remove('active');
+    if (chk) chk.checked = false;
+  });
   document.getElementById('constraint').value = '';
+  players.forEach((p, i) => { p.action = ''; });
+  renderPlayerRows();
   updateSummary();
-  setOutput('Build a drill to see output', true);
-  ['out-setup','out-execution','out-coaching','out-scoring'].forEach(id => {
-    document.getElementById(id).textContent = '—';
-    document.getElementById(id).classList.add('empty');
+  ['out-name','out-setup','out-execution','out-coaching','out-scoring'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = id === 'out-name' ? 'Build a drill to see output' : '—';
+    el.classList.add('empty');
   });
 });
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+initPlayers(playerCount);
+renderPlayerRows();
+renderPlayerMarkers();
+updateSummary();
+
 </script>
 </body>
 </html>
