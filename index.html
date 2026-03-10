@@ -400,15 +400,6 @@
     <div class="divider"></div>
 
     <div class="config-row">
-      <div class="section-label">Tier</div>
-      <select id="tier">
-        <option value="any">All Tiers</option>
-        <option value="ms">Middle School (6–8)</option>
-        <option value="hs">High School (9–12)</option>
-      </select>
-    </div>
-
-    <div class="config-row">
       <div class="section-label">Reps / Duration</div>
       <select id="reps">
         <option value="5 reps each side">5 reps each side</option>
@@ -431,85 +422,152 @@
   <!-- CENTER: Court -->
   <div class="court-area">
     <div class="court-wrap">
-      <svg id="court-svg" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+      <svg id="court-svg" viewBox="0 0 500 520" xmlns="http://www.w3.org/2000/svg">
+
+        <!--
+          Court layout matches reference image:
+          - ViewBox 500x520, court interior x:10-490, y:10-510
+          - Basket at BOTTOM, attacking upward
+          - cx=250 (center x)
+          - Baseline y=510, top y=10
+
+          Proportions (scaled to ~47ft deep, 50ft wide):
+          - 1ft ≈ 10px
+          - Paint: 12ft wide each side of center = 120px each → x:130 to x:370, 19ft deep = 190px → y:320 to y:510
+          - FT line: y=320, FT circle radius=60px, center (250,320)
+          - Basket: 5.25ft from baseline = 52px → y=458, cx=250
+          - 3pt arc: pure semicircle radius=210px from basket center (250,458)
+          - Center half-circle at top: radius=60px center (250,10)
+        -->
+
         <!-- Court background -->
-        <rect width="400" height="380" fill="#b89050" rx="4"/>
-
+        <rect x="0" y="0" width="500" height="520" fill="#c8803a" rx="4"/>
         <!-- Court floor -->
-        <rect x="20" y="10" width="360" height="360" fill="#c8a96e" stroke="#fff" stroke-width="2" rx="2"/>
+        <rect x="10" y="10" width="480" height="500" fill="#c8803a" stroke="#fff" stroke-width="2.5"/>
 
-        <!-- Half court line -->
-        <line x1="20" y1="190" x2="380" y2="190" stroke="#fff" stroke-width="1.5"/>
+        <!-- Half court line at top -->
+        <line x1="10" y1="10" x2="490" y2="10" stroke="#fff" stroke-width="2"/>
+        <!-- Center half-circle (top) -->
+        <path d="M 190 10 A 60 60 0 0 0 310 10" fill="none" stroke="#fff" stroke-width="2"/>
 
-        <!-- Center circle -->
-        <circle cx="200" cy="190" r="30" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <circle cx="200" cy="190" r="3" fill="#fff"/>
+        <!-- PAINT (blue filled rectangle) -->
+        <rect x="155" y="320" width="190" height="190" fill="#6a8faf" opacity="0.75"/>
+        <!-- Paint outline -->
+        <rect x="155" y="320" width="190" height="190" fill="none" stroke="#fff" stroke-width="2.5"/>
 
-        <!-- TOP KEY (offense end - top) -->
-        <rect x="130" y="10" width="140" height="120" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <!-- Free throw circle -->
-        <path d="M 130 130 A 70 70 0 0 1 270 130" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <!-- Basket -->
-        <circle cx="200" cy="30" r="8" fill="none" stroke="#fff" stroke-width="2"/>
-        <line x1="200" y1="10" x2="200" y2="38" stroke="#fff" stroke-width="1.5"/>
-        <!-- Backboard -->
-        <line x1="170" y1="12" x2="230" y2="12" stroke="#fff" stroke-width="3"/>
-        <!-- 3pt arc top -->
-        <path d="M 70 130 L 70 40 A 135 135 0 0 1 330 40 L 330 130" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <!-- Restricted area top -->
-        <path d="M 175 30 A 25 25 0 0 1 225 30" fill="none" stroke="#fff" stroke-width="1"/>
+        <!-- FT circle: solid top half (above y=320), dashed bottom half (below y=320) -->
+        <!-- center (250,320), radius=75 -->
+        <path d="M 175 320 A 75 75 0 0 1 325 320" fill="none" stroke="#fff" stroke-width="2.5"/>
+        <path d="M 175 320 A 75 75 0 0 0 325 320" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="8,6"/>
 
-        <!-- BOTTOM KEY (other end) -->
-        <rect x="130" y="250" width="140" height="120" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <path d="M 130 250 A 70 70 0 0 0 270 250" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <circle cx="200" cy="350" r="8" fill="none" stroke="#fff" stroke-width="2"/>
-        <line x1="200" y1="342" x2="200" y2="370" stroke="#fff" stroke-width="1.5"/>
-        <line x1="170" y1="368" x2="230" y2="368" stroke="#fff" stroke-width="3"/>
-        <path d="M 70 250 L 70 340 A 135 135 0 0 0 330 340 L 330 250" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <path d="M 175 350 A 25 25 0 0 0 225 350" fill="none" stroke="#fff" stroke-width="1"/>
+        <!-- 3PT ARC: pure semicircle, radius=210 from basket center (250,458) -->
+        <!-- Clip to court bounds so it hits the sidelines cleanly -->
+        <clipPath id="court-clip">
+          <rect x="10" y="10" width="480" height="500"/>
+        </clipPath>
+        <circle cx="250" cy="458" r="210" fill="none" stroke="#fff" stroke-width="2.5" clip-path="url(#court-clip)"/>
 
-        <!-- CLICKABLE ZONES (top half - offense) -->
-        <!-- Zone 1: Restricted area / paint center -->
-        <rect class="zone-overlay" id="zone-paint" x="155" y="10" width="90" height="90" data-zone="paint" data-label="Paint / Restricted Area"/>
-        <!-- Zone 2: Left block -->
-        <rect class="zone-overlay" id="zone-left-block" x="130" y="80" width="45" height="50" data-zone="left-block" data-label="Left Block"/>
-        <!-- Zone 3: Right block -->
-        <rect class="zone-overlay" id="zone-right-block" x="225" y="80" width="45" height="50" data-zone="right-block" data-label="Right Block"/>
-        <!-- Zone 4: Left elbow -->
-        <rect class="zone-overlay" id="zone-left-elbow" x="130" y="110" width="55" height="40" data-zone="left-elbow" data-label="Left Elbow"/>
-        <!-- Zone 5: Right elbow -->
-        <rect class="zone-overlay" id="zone-right-elbow" x="215" y="110" width="55" height="40" data-zone="right-elbow" data-label="Right Elbow"/>
-        <!-- Zone 6: Free throw line -->
-        <rect class="zone-overlay" id="zone-ft" x="155" y="110" width="90" height="30" data-zone="ft-line" data-label="Free Throw Line"/>
-        <!-- Zone 7: Left mid range -->
-        <path class="zone-overlay" id="zone-left-mid" d="M 70 130 L 130 130 L 130 80 L 70 80 Z" data-zone="left-mid" data-label="Left Mid Range"/>
-        <!-- Zone 8: Right mid range -->
-        <path class="zone-overlay" id="zone-right-mid" d="M 270 130 L 330 130 L 330 80 L 270 80 Z" data-zone="right-mid" data-label="Right Mid Range"/>
-        <!-- Zone 9: Left corner 3 -->
-        <rect class="zone-overlay" id="zone-left-corner" x="20" y="40" width="50" height="100" data-zone="left-corner-3" data-label="Left Corner 3"/>
-        <!-- Zone 10: Right corner 3 -->
-        <rect class="zone-overlay" id="zone-right-corner" x="330" y="40" width="50" height="100" data-zone="right-corner-3" data-label="Right Corner 3"/>
-        <!-- Zone 11: Left wing 3 -->
-        <path class="zone-overlay" id="zone-left-wing" d="M 20 140 L 70 140 L 70 130 A 135 135 0 0 1 110 60 L 70 40 L 20 40 Z" data-zone="left-wing-3" data-label="Left Wing 3"/>
-        <!-- Zone 12: Right wing 3 -->
-        <path class="zone-overlay" id="zone-right-wing" d="M 380 140 L 330 140 L 330 130 A 135 135 0 0 0 290 60 L 330 40 L 380 40 Z" data-zone="right-wing-3" data-label="Right Wing 3"/>
-        <!-- Zone 13: Top of key 3 -->
-        <path class="zone-overlay" id="zone-top-3" d="M 110 145 A 135 135 0 0 1 290 145 L 270 130 A 70 70 0 0 0 130 130 Z" data-zone="top-key-3" data-label="Top of Key 3"/>
+        <!-- BASKET: circle + T-shape, at bottom of paint -->
+        <!-- Basket circle -->
+        <circle cx="250" cy="458" r="14" fill="none" stroke="#fff" stroke-width="2.5"/>
+        <!-- Vertical post -->
+        <line x1="250" y1="472" x2="250" y2="495" stroke="#fff" stroke-width="2.5"/>
+        <!-- Horizontal base (backboard) -->
+        <line x1="222" y1="495" x2="278" y2="495" stroke="#fff" stroke-width="3.5"/>
 
-        <!-- Zone labels (shown on hover / active) -->
-        <text x="200" y="60" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-paint" opacity="0">Paint</text>
-        <text x="152" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-block" opacity="0">L Block</text>
-        <text x="248" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-block" opacity="0">R Block</text>
-        <text x="157" y="128" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-elbow" opacity="0">L Elbow</text>
-        <text x="243" y="128" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-elbow" opacity="0">R Elbow</text>
-        <text x="200" y="130" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-ft-line" opacity="0">FT Line</text>
-        <text x="100" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-mid" opacity="0">L Mid</text>
-        <text x="300" y="108" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-mid" opacity="0">R Mid</text>
-        <text x="45" y="95" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-corner-3" opacity="0">L Corner</text>
-        <text x="355" y="95" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-corner-3" opacity="0">R Corner</text>
-        <text x="47" y="140" text-anchor="middle" fill="#111" font-size="7" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-left-wing-3" opacity="0">L Wing</text>
-        <text x="353" y="140" text-anchor="middle" fill="#111" font-size="7" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-right-wing-3" opacity="0">R Wing</text>
-        <text x="200" y="143" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" class="zone-label" id="lbl-top-key-3" opacity="0">Top Key</text>
+        <!-- ===== CLICKABLE ZONE OVERLAYS =====
+          Zones are defined relative to the court. All zones tile the half court.
+          Basket at bottom (y=510 baseline), attacking upward toward y=10.
+          Paint: x:155-345, y:320-510
+          FT line: y=320
+          3pt arc: radius 210 from (250,458)
+        -->
+
+        <!-- 1. PAINT -->
+        <rect class="zone-overlay" id="zone-paint"
+          x="155" y="320" width="190" height="190"
+          data-zone="paint" data-label="Paint"/>
+
+        <!-- 2. LEFT BLOCK (lower-left of paint) -->
+        <rect class="zone-overlay" id="zone-left-block"
+          x="155" y="400" width="70" height="110"
+          data-zone="left-block" data-label="Left Block"/>
+
+        <!-- 3. RIGHT BLOCK -->
+        <rect class="zone-overlay" id="zone-right-block"
+          x="275" y="400" width="70" height="110"
+          data-zone="right-block" data-label="Right Block"/>
+
+        <!-- 4. LEFT ELBOW (top-left of paint at FT line) -->
+        <rect class="zone-overlay" id="zone-left-elbow"
+          x="155" y="295" width="75" height="60"
+          data-zone="left-elbow" data-label="Left Elbow"/>
+
+        <!-- 5. RIGHT ELBOW -->
+        <rect class="zone-overlay" id="zone-right-elbow"
+          x="270" y="295" width="75" height="60"
+          data-zone="right-elbow" data-label="Right Elbow"/>
+
+        <!-- 6. FREE THROW LINE (center, above paint) -->
+        <rect class="zone-overlay" id="zone-ft"
+          x="195" y="285" width="110" height="70"
+          data-zone="ft-line" data-label="Free Throw Line"/>
+
+        <!-- 7. LEFT MID RANGE (outside lane left, inside 3pt arc) -->
+        <path class="zone-overlay" id="zone-left-mid"
+          d="M 10 510 L 155 510 L 155 320 L 10 320 Z"
+          data-zone="left-mid" data-label="Left Mid Range"/>
+
+        <!-- 8. RIGHT MID RANGE -->
+        <path class="zone-overlay" id="zone-right-mid"
+          d="M 490 510 L 345 510 L 345 320 L 490 320 Z"
+          data-zone="right-mid" data-label="Right Mid Range"/>
+
+        <!-- 9. LEFT CORNER 3 -->
+        <path class="zone-overlay" id="zone-left-corner"
+          d="M 10 510 L 10 248 L 40 248 L 40 510 Z"
+          data-zone="left-corner-3" data-label="Left Corner 3"/>
+
+        <!-- 10. RIGHT CORNER 3 -->
+        <path class="zone-overlay" id="zone-right-corner"
+          d="M 490 510 L 490 248 L 460 248 L 460 510 Z"
+          data-zone="right-corner-3" data-label="Right Corner 3"/>
+
+        <!-- 11. LEFT WING 3 (along arc, left side above mid) -->
+        <path class="zone-overlay" id="zone-left-wing"
+          d="M 10 248 L 10 120 A 210 210 0 0 1 250 248 L 155 320 L 10 320 Z"
+          data-zone="left-wing-3" data-label="Left Wing 3"/>
+
+        <!-- 12. RIGHT WING 3 -->
+        <path class="zone-overlay" id="zone-right-wing"
+          d="M 490 248 L 490 120 A 210 210 0 0 0 250 248 L 345 320 L 490 320 Z"
+          data-zone="right-wing-3" data-label="Right Wing 3"/>
+
+        <!-- 13. TOP OF KEY 3 (above FT circle, center) -->
+        <path class="zone-overlay" id="zone-top-3"
+          d="M 175 320 A 75 75 0 0 1 325 320 L 325 248 A 75 75 0 0 0 175 248 Z"
+          data-zone="top-key-3" data-label="Top of Key 3"/>
+
+        <!-- 14. ABOVE THE ARC (deep, above 3pt line) -->
+        <path class="zone-overlay" id="zone-above-arc"
+          d="M 10 10 L 490 10 L 490 120 A 210 210 0 0 0 10 120 Z"
+          data-zone="above-arc" data-label="Above the Arc"/>
+
+        <!-- Zone labels (visible when active) -->
+        <text x="250" y="375" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold" font-family="DM Sans" pointer-events="none" id="lbl-paint" opacity="0">Paint</text>
+        <text x="190" y="460" text-anchor="middle" fill="#fff" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-block" opacity="0">L Block</text>
+        <text x="310" y="460" text-anchor="middle" fill="#fff" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-block" opacity="0">R Block</text>
+        <text x="185" y="330" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-elbow" opacity="0">L Elbow</text>
+        <text x="315" y="330" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-elbow" opacity="0">R Elbow</text>
+        <text x="250" y="325" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-ft-line" opacity="0">FT Line</text>
+        <text x="82" y="420" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-mid" opacity="0">L Mid</text>
+        <text x="418" y="420" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-mid" opacity="0">R Mid</text>
+        <text x="25" y="380" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-left-corner-3" opacity="0">L Cor</text>
+        <text x="475" y="380" text-anchor="middle" fill="#111" font-size="8" font-family="DM Sans" pointer-events="none" id="lbl-right-corner-3" opacity="0">R Cor</text>
+        <text x="75" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-left-wing-3" opacity="0">L Wing</text>
+        <text x="425" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-right-wing-3" opacity="0">R Wing</text>
+        <text x="250" y="290" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-top-key-3" opacity="0">Top Key</text>
+        <text x="250" y="70" text-anchor="middle" fill="#111" font-size="9" font-family="DM Sans" pointer-events="none" id="lbl-above-arc" opacity="0">Above Arc</text>
       </svg>
     </div>
 
@@ -601,6 +659,7 @@ const ZONES = [
   { id: "left-wing-3",   label: "Left Wing 3" },
   { id: "right-wing-3",  label: "Right Wing 3" },
   { id: "top-key-3",     label: "Top of Key 3" },
+  { id: "above-arc",     label: "Above the Arc" },
 ];
 
 let selectedConcepts = [];
@@ -746,14 +805,12 @@ function buildDrill() {
   }
 
   const players = selectedPlayers || '5v5';
-  const tier = document.getElementById('tier').value;
   const reps = document.getElementById('reps').value;
   const constraint = document.getElementById('constraint').value.trim();
   const concepts = selectedConcepts.length ? selectedConcepts : ['General Offense'];
   const zones = selectedZones.map(z => ZONES.find(x => x.id === z)?.label || z);
-  const tierLabel = tier === 'ms' ? 'Middle School' : tier === 'hs' ? 'High School' : 'All Tiers';
 
-  const drillData = generateDrill(concepts, zones, players, tierLabel, reps, constraint);
+  const drillData = generateDrill(concepts, zones, players, reps, constraint);
 
   document.getElementById('out-name').textContent = drillData.name;
   document.getElementById('out-name').classList.remove('empty');
@@ -767,7 +824,7 @@ function buildDrill() {
   document.getElementById('out-scoring').classList.remove('empty');
 }
 
-function generateDrill(concepts, zones, players, tier, reps, constraint) {
+function generateDrill(concepts, zones, players, reps, constraint) {
   const conceptStr = concepts.join(' + ');
   const zoneStr = zones.length ? zones.join(', ') : 'open floor';
   const isLive = players.includes('v') && !players.includes('v0');
@@ -778,7 +835,7 @@ function generateDrill(concepts, zones, players, tier, reps, constraint) {
   const name = `${conceptStr} — ${zoneStr} (${players})`;
 
   // Setup
-  let setup = `Players: ${players} (${tier})\n`;
+  let setup = `Players: ${players}\n`;
   setup += `Scoring targets: ${zoneStr}\n`;
   setup += `Reps / Duration: ${reps}\n`;
   if (isLive) {
