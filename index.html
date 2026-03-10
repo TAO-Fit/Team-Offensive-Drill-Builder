@@ -638,11 +638,14 @@
 
 <script>
 const CONCEPTS = [
-  "Pick & Roll","Pick & Pop","DHO","Back Door Cut","V-Cut",
-  "Flex Cut","Curl Cut","Fade Cut","Pin Down","Stagger Screen",
-  "Spain Pick","Horns","Zipper","Floppy","BLOB",
-  "Early Offense","Transition","Drive & Kick","Post Entry","Lob",
-  "High-Low","4-Out 1-In","5-Out","3-Out 2-In","Elbow Action"
+  // Ball Screen Actions
+  "Pick & Roll", "Pick & Pop", "DHO", "Ghost Screen",
+  // Cutting Actions
+  "Cut to Basket", "Sprint to Screen",
+  // Off-Ball Screens
+  "Screen", "Elevator",
+  // Post Entries
+  "High Post", "Mid Post", "Low Post", "Short Corner"
 ];
 
 const ZONES = [
@@ -847,62 +850,99 @@ function generateDrill(concepts, zones, players, reps, constraint) {
   // Execution — concept-specific
   let execution = '';
 
-  if (concepts.includes('Pick & Roll') || concepts.includes('Pick & Pop')) {
-    const action = concepts.includes('Pick & Pop') ? 'pop to' : 'roll to';
-    execution += `Ball handler starts at the top. Big sets a ball screen at the elbow or wing.\n`;
-    execution += `Ball handler reads the coverage — turn corner on hedged, reject on icing.\n`;
-    execution += `Big ${action} ${zoneStr}. Ball handler attacks downhill or kicks to the pop.\n`;
+  if (concepts.includes('Pick & Roll')) {
+    execution += `Ball handler uses a ball screen. Big sets hard, shoulder-to-hip contact.\n`;
+    execution += `Ball handler reads the coverage — turn the corner on a hedge, reject on ice.\n`;
+    execution += `Big rolls to the ${zoneStr}. Ball handler attacks downhill or hits the roller.\n`;
+  }
+  if (concepts.includes('Pick & Pop')) {
+    execution += `Ball handler uses a ball screen. Big sets and pops out to ${zoneStr}.\n`;
+    execution += `Ball handler reads the coverage and either turns the corner or kicks to the pop.\n`;
+    execution += `Big catches ready to shoot — feet set before the ball arrives.\n`;
   }
   if (concepts.includes('DHO')) {
-    execution += `Handler dribble hand-offs to cutter coming off the hip. \n`;
+    execution += `Handler dribbles at a teammate and hands off off the hip.\n`;
     execution += `Receiver reads the defense — curl to the rim, flat cut for mid, or reject for 3.\n`;
+    execution += `Handler follows the DHO as a screener or lifts away to maintain spacing.\n`;
     execution += `Attack scoring targets: ${zoneStr}.\n`;
   }
-  if (concepts.includes('Back Door Cut')) {
-    execution += `Wing or corner player shows high, then cuts back door hard off the pass fake.\n`;
-    execution += `Passer reads the cut and delivers a lead pass for the finish.\n`;
-    execution += `Target zones: ${zoneStr}.\n`;
+  if (concepts.includes('Ghost Screen')) {
+    execution += `Ball handler drives off a ghost screen — screener sets and slips before contact.\n`;
+    execution += `Defense must honor the threat of the screen. Ball handler attacks the gap.\n`;
+    execution += `Screener reads the defense and either rolls or pops to ${zoneStr}.\n`;
   }
-  if (concepts.includes('Drive & Kick')) {
-    execution += `Ball handler attacks paint off the dribble, drawing the defense.\n`;
-    execution += `Kick to shooter spotting up at: ${zoneStr}.\n`;
-    execution += `Catch-and-shoot or one dribble pull-up only.\n`;
+  if (concepts.includes('Cut to Basket')) {
+    execution += `Off-ball player reads their defender and makes a hard cut to the basket.\n`;
+    execution += `Passer delivers a lead pass on time and on target.\n`;
+    execution += `Cutter finishes at ${zoneStr}. No drift — attack the rim.\n`;
   }
-  if (concepts.includes('Pin Down')) {
-    execution += `Screener sets a pin-down screen on the block for a shooter coming up.\n`;
-    execution += `Shooter reads defender — curl if trailing, fade if chasing, flat if fronting.\n`;
-    execution += `Catch and attack target zone: ${zoneStr}.\n`;
+  if (concepts.includes('Sprint to Screen')) {
+    execution += `Off-ball player sprints to set a screen for a teammate.\n`;
+    execution += `Set a legal screen — stationary, feet set, no moving into the defender.\n`;
+    execution += `Screener reads the defense after the screen and reacts accordingly.\n`;
   }
-  if (concepts.includes('Horns')) {
-    execution += `Two bigs set up at each elbow. Guard enters the ball to one elbow.\n`;
-    execution += `Options: hand-off, pick & roll with far big, skip to corner, or post entry.\n`;
-    execution += `Scoring targets off the action: ${zoneStr}.\n`;
+  if (concepts.includes('Screen')) {
+    execution += `Screener sets a stationary off-ball screen for a cutter or shooter.\n`;
+    execution += `Cutter reads the defender — curl, fade, or flat cut based on how the defense plays it.\n`;
+    execution += `Catch and attack ${zoneStr}.\n`;
+  }
+  if (concepts.includes('Elevator')) {
+    execution += `Two players set up as elevator doors on each side of the lane.\n`;
+    execution += `Shooter times the cut through the gap as the doors close.\n`;
+    execution += `Passer hits the shooter in rhythm. Shooter catches ready to fire at ${zoneStr}.\n`;
+  }
+  if (concepts.includes('High Post')) {
+    execution += `Entry pass to the high post (elbow or free throw line extended).\n`;
+    execution += `High post reads the defense — face up, drive baseline or middle, or hit a cutter.\n`;
+    execution += `Perimeter players cut or relocate on the entry.\n`;
+  }
+  if (concepts.includes('Mid Post')) {
+    execution += `Entry pass to the mid post (mid-lane, between block and elbow).\n`;
+    execution += `Post player seals their defender and catches with a target hand.\n`;
+    execution += `Attack the baseline or middle depending on defender's position.\n`;
+  }
+  if (concepts.includes('Low Post')) {
+    execution += `Entry pass to the low block. Post player establishes position and calls for the ball.\n`;
+    execution += `Post reads the defense — drop step baseline, drop step middle, or up-and-under.\n`;
+    execution += `Perimeter players hold spacing and prepare for a kick-out if defense collapses.\n`;
+  }
+  if (concepts.includes('Short Corner')) {
+    execution += `Ball is entered to the short corner (baseline extended, outside the lane).\n`;
+    execution += `Short corner player reads the defense — attack the mid-range, feed the post, or kick back out.\n`;
+    execution += `Requires crisp spacing — perimeter players cannot crowd the short corner.\n`;
   }
   if (!execution) {
     execution += `Offense executes ${conceptStr} with the goal of generating a scoring opportunity at ${zoneStr}.\n`;
-    execution += `Players rotate through positions after each possession.`;
+    execution += `Players rotate through positions after each possession.\n`;
   }
 
-  execution += `\nRotation: ${reps}. Offense and defense swap after each round.`;
+  execution += `\nRotation: ${reps}. ${isLive ? 'Offense and defense swap after each round.' : 'Walk through once, then full speed.'}`;
 
   // Coaching points
   let coaching = '';
   coaching += `• Read the defense before the action — anticipate, do not react.\n`;
   if (concepts.includes('Pick & Roll') || concepts.includes('Pick & Pop')) {
-    coaching += `• Ball handler: stay low off the screen, shoulder-to-shoulder.\n`;
-    coaching += `• Big: set hard screen, hold until contact is made before rolling or popping.\n`;
+    coaching += `• Ball handler: stay low off the screen, shoulder-to-shoulder contact.\n`;
+    coaching += `• Big: set hard, hold until contact is made before rolling or popping.\n`;
   }
-  if (concepts.includes('Back Door Cut')) {
-    coaching += `• Timing is everything — the cut starts when the defender turns their head.\n`;
-    coaching += `• Passer: do not stare the cutter down. Sell the denial, then deliver.\n`;
+  if (concepts.includes('Ghost Screen')) {
+    coaching += `• Timing is the whole play — screener slips at the right moment, not early.\n`;
+    coaching += `• Ball handler must sell the drive off the screen to freeze the defense.\n`;
   }
-  if (concepts.includes('Drive & Kick')) {
-    coaching += `• Shooters: be ready before the drive. Feet set on the catch.\n`;
-    coaching += `• Driver: get to the paint, draw contact or draw help, then kick.\n`;
+  if (concepts.includes('DHO')) {
+    coaching += `• Handler: attack the defender before the hand-off, do not drift.\n`;
+    coaching += `• Receiver: come off the hip tight, read the defense on the catch.\n`;
   }
-  coaching += `• Attack the target zones — do not settle for contested looks outside the plan.\n`;
-  coaching += `• Tier note (${tier}): ${tier === 'Middle School' ? 'Simplify if needed — walk through then speed up.' : tier === 'High School' ? 'Run at game speed. No walk-throughs after rep 1.' : 'Adjust pace by individual level.'}`;
-
+  if (concepts.includes('Cut to Basket') || concepts.includes('Sprint to Screen')) {
+    coaching += `• Cuts must be sharp and purposeful — no jogging.\n`;
+    coaching += `• Passer: see the cutter before they cut. Deliver early.\n`;
+  }
+  if (concepts.includes('High Post') || concepts.includes('Mid Post') || concepts.includes('Low Post') || concepts.includes('Short Corner')) {
+    coaching += `• Post players: establish position before calling for the ball.\n`;
+    coaching += `• Perimeter: hold spacing on the entry. Do not collapse the floor.\n`;
+    coaching += `• Read the help defender — attack opposite of where help is coming from.\n`;
+  }
+  coaching += `• Attack the target zones — do not settle for contested looks outside the plan.`;
   // Scoring
   let scoring = `Reps: ${reps}\n`;
   if (constraint) scoring += `Constraint: ${constraint}\n`;
